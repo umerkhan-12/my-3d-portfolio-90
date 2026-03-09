@@ -101,6 +101,23 @@
     border-color: hsl(142 60% 50% / 0.3);
     box-shadow: 0 0 20px hsl(142 60% 50% / 0.05);
   }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient 8s ease infinite;
+  }
+
+  @keyframes gradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .hover-lift {
+    @apply transition-transform duration-300;
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
 }
 
 /* Scrollbar */

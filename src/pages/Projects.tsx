@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { ExternalLink, Github, ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Scene3DSimple from "@/components/Scene3DSimple";
 
 const projects = [
   {
@@ -115,10 +116,11 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
 
 export default function Projects() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <Scene3DSimple />
       <Navbar />
 
-      <div className="pt-24 pb-16 max-w-6xl mx-auto px-6 md:px-12">
+      <div className="pt-24 pb-16 max-w-6xl mx-auto px-6 md:px-12 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

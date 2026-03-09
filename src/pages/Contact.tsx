@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Github, Linkedin, Send } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Scene3DSimple from "@/components/Scene3DSimple";
 
 const contactInfo = [
   { icon: Mail, label: "Email", value: "khaankhattack321@gmail.com", href: "mailto:khaankhattack321@gmail.com" },
@@ -16,10 +17,11 @@ const socials = [
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <Scene3DSimple />
       <Navbar />
 
-      <div className="pt-24 pb-16 max-w-4xl mx-auto px-6 md:px-12">
+      <div className="pt-24 pb-16 max-w-4xl mx-auto px-6 md:px-12 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -78,7 +80,7 @@ export default function Contact() {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card card-hover block"
+                className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card card-hover"
               >
                 <div className="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center">
                   <Icon size={18} className="text-primary" />

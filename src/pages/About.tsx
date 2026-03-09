@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { GraduationCap, Code2, Shield, Wrench, Brain, Users, Trophy } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Scene3DSimple from "@/components/Scene3DSimple";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -82,10 +83,11 @@ function AnimatedSection({ children, className = "" }: { children: React.ReactNo
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <Scene3DSimple />
       <Navbar />
 
-      <div className="pt-24 pb-16 max-w-6xl mx-auto px-6 md:px-12">
+      <div className="pt-24 pb-16 max-w-6xl mx-auto px-6 md:px-12 relative z-10">
         {/* Header */}
         <AnimatedSection className="mb-16">
           <p className="text-sm font-mono text-primary mb-3 tracking-wider">// about-me</p>
