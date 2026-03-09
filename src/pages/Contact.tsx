@@ -3,6 +3,7 @@ import { Mail, Phone, MapPin, Github, Linkedin, Send } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Scene3DSimple from "@/components/Scene3DSimple";
+import SEO from "@/components/SEO";
 
 const contactInfo = [
   { icon: Mail, label: "Email", value: "khaankhattack321@gmail.com", href: "mailto:khaankhattack321@gmail.com" },
@@ -18,6 +19,11 @@ const socials = [
 export default function Contact() {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      <SEO 
+        title="Contact" 
+        description="Get in touch with Umer Khan. Available for freelance projects, collaboration opportunities, and full-time positions. Contact via email, phone, or LinkedIn."
+        keywords="Contact, Hire Developer, Freelance, Collaboration, Email, LinkedIn"
+      />
       <Scene3DSimple />
       <Navbar />
 

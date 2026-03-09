@@ -6,6 +6,7 @@ import Scene3D from "@/components/Scene3D";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -87,6 +88,11 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
+      <SEO 
+        title="Home" 
+        description="Full-Stack Developer specializing in React, Next.js, Node.js, DevOps, and AI/Machine Learning. Building scalable solutions with modern technologies."
+        keywords="Umer Khan, Portfolio, Full-Stack Developer, React Developer, Next.js, AI/ML"
+      />
       <Navbar />
 
       {/* Hero Section - Green Theme */}

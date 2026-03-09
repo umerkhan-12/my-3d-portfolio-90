@@ -4,6 +4,7 @@ import { GraduationCap, Code2, Shield, Wrench, Brain, Users, Trophy } from "luci
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Scene3DSimple from "@/components/Scene3DSimple";
+import SEO from "@/components/SEO";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -84,6 +85,11 @@ function AnimatedSection({ children, className = "" }: { children: React.ReactNo
 export default function About() {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      <SEO 
+        title="About Me" 
+        description="Learn about my journey as a Full-Stack Developer. Expertise in React, Next.js, Node.js, AI/ML, and modern web technologies. Currently pursuing BS Computer Science at FAST NUCES."
+        keywords="About Umer Khan, Skills, Education, Experience, Computer Science"
+      />
       <Scene3DSimple />
       <Navbar />
 

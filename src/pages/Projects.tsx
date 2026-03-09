@@ -4,6 +4,7 @@ import { ExternalLink, Github, ArrowRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Scene3DSimple from "@/components/Scene3DSimple";
+import SEO from "@/components/SEO";
 
 const projects = [
   {
@@ -117,6 +118,11 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
 export default function Projects() {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      <SEO 
+        title="Projects" 
+        description="Explore my portfolio of web development projects including NADRA Citizen Services Portal, Voice Assistant AI, Spotify Clone, and more. Built with React, Next.js, Node.js, and AI/ML technologies."
+        keywords="Projects, Portfolio, Web Development, React Projects, Next.js Projects, Full-Stack Projects"
+      />
       <Scene3DSimple />
       <Navbar />
 

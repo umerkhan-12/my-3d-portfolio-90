@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <!-- Main gradient for face -->
+    <linearGradient id="mainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Light gradient for 3D effect -->
+    <linearGradient id="lightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </linearGradient>
+    
+    <!-- Shadow gradient -->
+    <radialGradient id="shadowGrad" cx="50%" cy="50%">
+      <stop offset="60%" style="stop-color:#000000;stop-opacity:0" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:0.3" />
+    </radialGradient>
+    
+    <!-- Text shadow -->
+    <filter id="textShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="2" dy="3" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.5"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Shadow base -->
+  <ellipse cx="100" cy="190" rx="80" ry="15" fill="url(#shadowGrad)"/>
+  
+  <!-- Main rounded square with 3D effect -->
+  <rect x="20" y="20" width="160" height="160" rx="35" fill="url(#mainGrad)"/>
+  
+  <!-- Top highlight for 3D effect -->
+  <rect x="20" y="20" width="160" height="80" rx="35" fill="url(#lightGrad)" opacity="0.5"/>
+  
+  <!-- Glossy highlight -->
+  <ellipse cx="70" cy="60" rx="35" ry="25" fill="white" opacity="0.2"/>
+  
+  <!-- Side shadow for depth -->
+  <rect x="165" y="35" width="15" height="145" rx="8" fill="#000000" opacity="0.15"/>
+  <rect x="35" y="165" width="145" height="15" rx="8" fill="#000000" opacity="0.15"/>
+  
+  <!-- Text with 3D effect -->
+  <text x="100" y="135" 
+        font-family="Arial, sans-serif" 
+        font-size="95" 
+        font-weight="900" 
+        fill="white" 
+        text-anchor="middle"
+        filter="url(#textShadow)"
+        style="paint-order: stroke;">
+    UK
+  </text>
+  
+  <!-- Text highlight -->
+  <text x="98" y="132" 
+        font-family="Arial, sans-serif" 
+        font-size="95" 
+        font-weight="900" 
+        fill="url(#lightGrad)" 
+        text-anchor="middle"
+        opacity="0.4">
+    UK
+  </text>
+</svg>
