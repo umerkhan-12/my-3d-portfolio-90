@@ -1,7 +1,7 @@
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useInView, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { ArrowRight, Github, Linkedin, Mail, Code2, Briefcase, GraduationCap, Award, ExternalLink, Send, MapPin, Phone, Sparkles, Rocket, Target, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Scene3D from "@/components/Scene3D";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -86,6 +86,25 @@ export default function Index() {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
+  // Rotating text effect
+  const roles = [
+    "Full-Stack Developer",
+    "Database Specialist",
+    "AI/ML Enthusiast",
+    "DevOps Engineer",
+    "Problem Solver"
+  ];
+  
+  const [currentRole, setCurrentRole] = useState(0);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentRole((prev) => (prev + 1) % roles.length);
+    }, 2500);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <SEO 
@@ -130,7 +149,7 @@ export default function Index() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-sm font-mono mb-8 lg:self-start self-center"
           >
             <Sparkles className="w-4 h-4" />
-            Full-Stack Developer & CS Student
+            CS Student @ FAST NUCES
           </motion.div>
 
           <motion.h1
@@ -143,17 +162,34 @@ export default function Index() {
             <span className="bg-gradient-to-r from-emerald-400 via-green-500 to-emerald-600 bg-clip-text text-transparent">Khan</span>
           </motion.h1>
 
-          <motion.p
+          {/* Rotating role text */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 h-12 lg:h-14 flex items-center lg:justify-start justify-center"
+          >
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={currentRole}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+                className="text-emerald-400 inline-block"
+              >
+                {roles[currentRole]}
+              </motion.span>
+            </AnimatePresence>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
             className="text-lg md:text-xl text-gray-300 max-w-2xl lg:max-w-xl mb-10 leading-relaxed lg:mx-0 mx-auto"
           >
-            Specializing in <span className="text-emerald-400 font-semibold">Full-Stack Development</span>,{" "}
-            <span className="text-green-400 font-semibold">DevOps</span>, and{" "}
-            <span className="text-emerald-300 font-semibold">AI/Machine Learning</span>
-            <br className="hidden md:block" />
-            Building scalable solutions with modern technologies and clean architecture.
+            Building scalable web solutions with modern technologies. Passionate about creating innovative applications that make a difference.
           </motion.p>
 
           <motion.div
