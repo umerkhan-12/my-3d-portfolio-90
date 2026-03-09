@@ -3,7 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
-function FloatingGeometry({ position, color, speed, distort, scale }: {
+function FloatingShape({ position, color, speed, distort, scale }: {
   position: [number, number, number];
   color: string;
   speed: number;
@@ -14,23 +14,23 @@ function FloatingGeometry({ position, color, speed, distort, scale }: {
 
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x = state.clock.elapsedTime * speed * 0.3;
-      meshRef.current.rotation.y = state.clock.elapsedTime * speed * 0.2;
+      meshRef.current.rotation.x = state.clock.elapsedTime * speed * 0.2;
+      meshRef.current.rotation.y = state.clock.elapsedTime * speed * 0.15;
     }
   });
 
   return (
-    <Float speed={speed} rotationIntensity={0.5} floatIntensity={2}>
+    <Float speed={speed} rotationIntensity={0.3} floatIntensity={1.5}>
       <mesh ref={meshRef} position={position} scale={scale}>
         <icosahedronGeometry args={[1, 1]} />
         <MeshDistortMaterial
           color={color}
-          roughness={0.2}
-          metalness={0.8}
+          roughness={0.3}
+          metalness={0.7}
           distort={distort}
-          speed={2}
+          speed={1.5}
           transparent
-          opacity={0.7}
+          opacity={0.5}
         />
       </mesh>
     </Float>
@@ -38,23 +38,22 @@ function FloatingGeometry({ position, color, speed, distort, scale }: {
 }
 
 function Particles() {
-  const count = 200;
+  const count = 150;
   const particlesRef = useRef<THREE.Points>(null);
 
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 20;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 20;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 20;
+      pos[i * 3] = (Math.random() - 0.5) * 18;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 18;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 18;
     }
     return pos;
   }, []);
 
   useFrame((state) => {
     if (particlesRef.current) {
-      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.02;
-      particlesRef.current.rotation.x = state.clock.elapsedTime * 0.01;
+      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.015;
     }
   });
 
@@ -68,7 +67,7 @@ function Particles() {
           itemSize={3}
         />
       </bufferGeometry>
-      <pointsMaterial size={0.03} color="#38bdf8" transparent opacity={0.6} sizeAttenuation />
+      <pointsMaterial size={0.025} color="#4ade80" transparent opacity={0.4} sizeAttenuation />
     </points>
   );
 }
@@ -76,17 +75,15 @@ function Particles() {
 export default function Scene3D() {
   return (
     <div className="absolute inset-0 z-0">
-      <Canvas camera={{ position: [0, 0, 6], fov: 60 }} dpr={[1, 2]}>
-        <ambientLight intensity={0.3} />
-        <directionalLight position={[5, 5, 5]} intensity={0.8} color="#38bdf8" />
-        <directionalLight position={[-5, -5, 5]} intensity={0.4} color="#8b5cf6" />
-        <pointLight position={[0, 0, 3]} intensity={0.5} color="#38bdf8" />
+      <Canvas camera={{ position: [0, 0, 6], fov: 55 }} dpr={[1, 1.5]}>
+        <ambientLight intensity={0.2} />
+        <directionalLight position={[5, 5, 5]} intensity={0.6} color="#4ade80" />
+        <directionalLight position={[-5, -3, 5]} intensity={0.3} color="#38bdf8" />
 
-        <FloatingGeometry position={[-3, 1.5, -2]} color="#38bdf8" speed={1.2} distort={0.4} scale={0.8} />
-        <FloatingGeometry position={[3, -1, -1]} color="#8b5cf6" speed={0.8} distort={0.3} scale={1.2} />
-        <FloatingGeometry position={[0, 2, -3]} color="#06b6d4" speed={1} distort={0.5} scale={0.6} />
-        <FloatingGeometry position={[-2, -2, -2]} color="#a78bfa" speed={0.6} distort={0.2} scale={0.5} />
-        <FloatingGeometry position={[2, 0, -4]} color="#22d3ee" speed={1.5} distort={0.35} scale={0.7} />
+        <FloatingShape position={[-3.5, 1.5, -3]} color="#4ade80" speed={0.8} distort={0.3} scale={0.7} />
+        <FloatingShape position={[3.5, -1, -2]} color="#38bdf8" speed={0.6} distort={0.25} scale={1} />
+        <FloatingShape position={[0, 2.5, -4]} color="#22c55e" speed={0.7} distort={0.4} scale={0.5} />
+        <FloatingShape position={[-2, -2, -3]} color="#0ea5e9" speed={0.5} distort={0.2} scale={0.4} />
 
         <Particles />
       </Canvas>
