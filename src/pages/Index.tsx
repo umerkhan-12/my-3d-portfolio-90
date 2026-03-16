@@ -2,7 +2,7 @@ import { motion, useInView, useScroll, useTransform, AnimatePresence } from "fra
 import { ArrowRight, Github, Linkedin, Mail, Code2, Briefcase, GraduationCap, Award, ExternalLink, Send, MapPin, Phone, Sparkles, Rocket, Target, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
-import Scene3D from "@/components/Scene3D";
+import Scene3DSimple from "@/components/Scene3DSimple";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -31,42 +31,43 @@ const skills = {
   "Frontend": ["React 19", "Next.js 16", "Tailwind CSS", "Framer Motion", "Three.js"],
   "Backend": ["Node.js", "Express.js", "Flask", "REST APIs", "JWT"],
   "Database": ["MySQL 8", "MongoDB", "Prisma ORM"],
+  "Security": ["NextAuth.js", "bcrypt", "OTP", "RBAC", "Rate Limiting"],
   "Tools": ["Git", "Docker", "Vite", "Postman", "VS Code"],
 };
 
 const projects = [
   {
     title: "NADRA Citizen Services Portal",
-    description: "Automated government service delivery platform reducing processing time by 60%. Multi-role authentication with intelligent ticket management and bilingual AI chatbot.",
-    tags: ["Next.js", "React", "Prisma", "MySQL", "Flask", "AI"],
+    description: "Enterprise-grade government platform that reduced processing time by 60% with intelligent ticket management, multi-role auth, and bilingual AI chatbot.",
+    tags: ["Next.js", "Prisma", "MySQL", "Flask", "AI"],
     github: "https://github.com/umerkhan-12",
-    highlights: "60% faster processing • 12-table normalized DB • Bilingual AI chatbot"
+    highlights: "60% faster processing • 12-table DB • Bilingual AI chatbot"
   },
   {
     title: "Voice Assistant AI",
-    description: "Hands-free voice-controlled assistant with 95% speech recognition accuracy. Supports 10+ commands including web search, time/date, and app launching.",
-    tags: ["Python", "SpeechRecognition", "Edge TTS", "Tkinter"],
+    description: "Hands-free voice-controlled assistant achieving 95% speech recognition accuracy. Supports 10+ commands with natural voice synthesis.",
+    tags: ["Python", "SpeechRecognition", "Edge TTS"],
     github: "https://github.com/umerkhan-12",
-    highlights: "95% accuracy • 10+ voice commands • Natural voice synthesis"
+    highlights: "95% accuracy • 10+ commands • Natural voice synthesis"
+  },
+  {
+    title: "PassMag — Password Manager",
+    description: "Secure local-first password management tool with full CRUD, real-time updates, search/filter, and copy-to-clipboard — zero external dependencies.",
+    tags: ["React", "Express.js", "Tailwind CSS"],
+    github: "https://github.com/umerkhan-12",
+    highlights: "Full CRUD • Local-first • Zero dependencies"
   },
   {
     title: "Spotify Clone",
-    description: "Pixel-perfect Spotify UI replica with custom audio controls, dynamic playlists, and 100% mobile responsive design using vanilla JavaScript.",
+    description: "Pixel-perfect Spotify replica with custom audio controls, dynamic playlists, and 100% mobile responsive design — built without frameworks.",
     tags: ["HTML", "CSS", "JavaScript", "Audio API"],
     github: "https://github.com/umerkhan-12",
-    highlights: "Pixel-perfect UI • Custom audio controls • 100% responsive"
-  },
-  {
-    title: "Query Quest — PROCOM 2026",
-    description: "Competitive SQL learning game platform for national computing olympiad. Gamified challenges with real-time scoring and leaderboards.",
-    tags: ["React", "Node.js", "SQL", "Game Design"],
-    github: "https://github.com/umerkhan-12",
-    highlights: "National olympiad platform • Gamified learning • Real-time scoring"
+    highlights: "Pixel-perfect UI • Custom audio • 100% responsive"
   },
 ];
 
 const stats = [
-  { icon: Code2, label: "Projects Completed", value: "15+" },
+  { icon: Code2, label: "Projects Built", value: "15+" },
   { icon: Award, label: "GitHub Contributions", value: "500+" },
   { icon: Users, label: "Open Source", value: "Active" },
   { icon: Rocket, label: "Learning", value: "Always" },
@@ -83,15 +84,10 @@ export default function Index() {
   const projectsInView = useInView(projectsRef, { once: true, margin: "-100px" });
   const contactInView = useInView(contactRef, { once: true, margin: "-100px" });
 
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-
-  // Rotating text effect
   const roles = [
     "Full-Stack Developer",
-    "Database Specialist",
+    "Database Architect",
     "AI/ML Enthusiast",
-    "DevOps Engineer",
     "Problem Solver"
   ];
   
@@ -101,140 +97,137 @@ export default function Index() {
     const interval = setInterval(() => {
       setCurrentRole((prev) => (prev + 1) % roles.length);
     }, 2500);
-    
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden relative">
       <SEO 
         title="Home" 
-        description="Full-Stack Developer specializing in React, Next.js, Node.js, DevOps, and AI/Machine Learning. Building scalable solutions with modern technologies."
-        keywords="Umer Khan, Portfolio, Full-Stack Developer, React Developer, Next.js, AI/ML"
+        description="Umer Khan — Full-Stack Developer specializing in React, Next.js, Node.js, and AI/ML. Building production-ready applications with modern technologies."
+        keywords="Umer Khan, Portfolio, Full-Stack Developer, React, Next.js, Python"
       />
+      
+      {/* Global 3D Background */}
+      <Scene3DSimple />
+      
       <Navbar />
 
-      {/* Hero Section - Green Theme */}
-      <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-black">
-        {/* Green radial glow effect */}
-        <div className="absolute inset-0 bg-gradient-radial from-emerald-950/30 via-black to-black z-0" />
+      {/* Hero Section */}
+      <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background z-[1]" />
         
-        {/* 3D Character Scene - Temporarily Commented */}
-        {/* <Scene3D /> */}
-        
-        {/* Video Background - Left Side */}
-        <div className="absolute left-0 top-0 w-full lg:w-1/2 h-full z-[1]">
-          <div className="relative w-full h-full overflow-hidden bg-gray-900">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-90"
-              onError={(e) => console.error('Video failed to load:', e)}
-            >
-              <source src="/videos/video1.mp4" type="video/mp4" />
-            </video>
-            {/* Subtle green tint overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-emerald-900/10 to-black/40" />
-          </div>
+        {/* Video Background */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-20"
+          >
+            <source src="/videos/video1.mp4" type="video/mp4" />
+          </video>
         </div>
         
-        {/* Text Content - Right Side */}
-        <div className="relative z-10 w-full lg:w-1/2 ml-auto px-6 lg:px-12 xl:px-24 flex flex-col justify-center lg:text-left text-center min-h-screen py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-sm font-mono mb-8 lg:self-start self-center"
-          >
-            <Sparkles className="w-4 h-4" />
-            CS Student @ FAST NUCES
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-tight leading-[1.1] mb-6"
-          >
-            <span className="text-white">Umer </span>
-            <span className="bg-gradient-to-r from-emerald-400 via-green-500 to-emerald-600 bg-clip-text text-transparent">Khan</span>
-          </motion.h1>
-
-          {/* Rotating role text */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-2xl md:text-3xl lg:text-4xl font-bold mb-6 h-12 lg:h-14 flex items-center lg:justify-start justify-center"
-          >
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={currentRole}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-                className="text-emerald-400 inline-block"
-              >
-                {roles[currentRole]}
-              </motion.span>
-            </AnimatePresence>
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-lg md:text-xl text-gray-300 max-w-2xl lg:max-w-xl mb-10 leading-relaxed lg:mx-0 mx-auto"
-          >
-            Building scalable web solutions with modern technologies. Passionate about creating innovative applications that make a difference.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 lg:justify-start justify-center items-center mb-12"
-          >
-            <Link
-              to="/projects"
-              className="flex items-center gap-2 px-8 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity glow-primary"
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col lg:flex-row items-center gap-12 py-20">
+          {/* Text Content */}
+          <div className="flex-1 lg:text-left text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-mono mb-8"
             >
-              View Projects
-              <ArrowRight size={16} />
-            </Link>
-            <Link
-              to="/contact"
-              className="px-8 py-3 rounded-lg border border-border text-foreground font-medium hover:border-primary/40 transition-colors"
-            >
-              Get in Touch
-            </Link>
-          </motion.div>
+              <Sparkles className="w-4 h-4" />
+              CS Student @ FAST NUCES
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="flex lg:justify-start justify-center gap-5"
-          >
-            {[
-              { icon: Github, href: "https://github.com/umerkhan-12" },
-              { icon: Linkedin, href: "https://linkedin.com/in/umer-khan10" },
-              { icon: Mail, href: "mailto:khaankhattack321@gmail.com" },
-            ].map(({ icon: Icon, href }) => (
-              <a
-                key={href}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-11 h-11 rounded-full border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all hover:scale-110"
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] mb-4"
+            >
+              <span className="text-foreground">Umer </span>
+              <span className="text-gradient">Khan</span>
+            </motion.h1>
+
+            {/* Rotating role text */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-2xl md:text-3xl font-bold mb-6 h-12 flex items-center lg:justify-start justify-center"
+            >
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={currentRole}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-primary inline-block"
+                >
+                  {roles[currentRole]}
+                </motion.span>
+              </AnimatePresence>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="text-lg text-muted-foreground max-w-xl mb-10 leading-relaxed lg:mx-0 mx-auto"
+            >
+              Engineering production-ready web applications with scalable architectures, 
+              optimized databases, and intelligent automation.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-4 lg:justify-start justify-center items-center mb-12"
+            >
+              <Link
+                to="/projects"
+                className="flex items-center gap-2 px-8 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity glow-primary"
               >
-                <Icon size={20} />
-              </a>
-            ))}
-          </motion.div>
+                View Projects
+                <ArrowRight size={16} />
+              </Link>
+              <Link
+                to="/contact"
+                className="px-8 py-3 rounded-lg border border-border text-foreground font-medium hover:border-primary/40 transition-colors"
+              >
+                Get in Touch
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="flex lg:justify-start justify-center gap-5"
+            >
+              {[
+                { icon: Github, href: "https://github.com/umerkhan-12" },
+                { icon: Linkedin, href: "https://linkedin.com/in/umer-khan10" },
+                { icon: Mail, href: "mailto:khaankhattack321@gmail.com" },
+              ].map(({ icon: Icon, href }) => (
+                <a
+                  key={href}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-11 h-11 rounded-full border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all hover:scale-110"
+                >
+                  <Icon size={20} />
+                </a>
+              ))}
+            </motion.div>
+          </div>
         </div>
 
         {/* Scroll Indicator */}
@@ -242,7 +235,7 @@ export default function Index() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
-          className="absolute bottom-8 left-8 lg:left-1/4 z-10"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
         >
           <div className="w-6 h-10 rounded-full border-2 border-primary/30 flex items-start justify-center p-2">
             <motion.div
@@ -255,7 +248,7 @@ export default function Index() {
       </section>
 
       {/* Stats Section */}
-      <section id="stats" className="py-20 bg-card/30 backdrop-blur-sm border-y border-border/50">
+      <section className="py-20 relative z-10">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -284,7 +277,7 @@ export default function Index() {
       </section>
 
       {/* About Section */}
-      <section id="about" ref={aboutRef} className="py-24 px-6">
+      <section id="about" ref={aboutRef} className="py-24 px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
           <motion.div
             variants={staggerContainer}
@@ -299,7 +292,7 @@ export default function Index() {
                 Who I <span className="text-gradient">Am</span>
               </h2>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                A passionate computer science student crafting digital experiences
+                A driven computer science student building production-ready software
               </p>
             </motion.div>
 
@@ -311,18 +304,18 @@ export default function Index() {
                       <GraduationCap className="w-6 h-6 text-primary" />
                     </div>
                     <CardTitle>Education</CardTitle>
-                    <CardDescription>Building a strong foundation</CardDescription>
+                    <CardDescription>Academic foundation</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div>
                         <h4 className="font-semibold text-foreground">BS Computer Science</h4>
-                        <p className="text-sm text-muted-foreground">FAST NUCES, Karachi</p>
-                        <p className="text-xs text-primary mt-1">2023 - 2027</p>
+                        <p className="text-sm text-muted-foreground">FAST NUCES, Karachi — 4 semesters completed</p>
+                        <p className="text-xs text-primary mt-1">2023 – 2027</p>
                       </div>
                       <p className="text-sm text-muted-foreground leading-relaxed">
-                        Studying core CS concepts including Data Structures, Algorithms, DBMS, 
-                        OOP, and Operating Systems while building real-world projects.
+                        Coursework in Data Structures, Algorithms, DBMS, OOP, and Operating Systems 
+                        — with hands-on experience building production-ready applications.
                       </p>
                     </div>
                   </CardContent>
@@ -335,17 +328,17 @@ export default function Index() {
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                       <Target className="w-6 h-6 text-primary" />
                     </div>
-                    <CardTitle>Focus Areas</CardTitle>
-                    <CardDescription>What drives me forward</CardDescription>
+                    <CardTitle>What I Do</CardTitle>
+                    <CardDescription>Core competencies</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-3">
                       {[
-                        "Full-stack web development with modern frameworks",
-                        "Building scalable and secure applications",
-                        "3D web experiences with Three.js",
-                        "Clean code architecture & best practices",
-                        "Open source contribution & collaboration"
+                        "Full-stack development with Next.js, React & Node.js",
+                        "Database architecture, optimization & indexing strategies",
+                        "Enterprise authentication & security implementation",
+                        "AI/ML integration into web applications",
+                        "Clean architecture & scalable system design"
                       ].map((item, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm">
                           <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
@@ -371,7 +364,7 @@ export default function Index() {
       </section>
 
       {/* Skills Section */}
-      <section id="skills" ref={skillsRef} className="py-24 px-6 bg-card/30 backdrop-blur-sm">
+      <section id="skills" ref={skillsRef} className="py-24 px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
           <motion.div
             variants={staggerContainer}
@@ -386,7 +379,7 @@ export default function Index() {
                 Skills & <span className="text-gradient">Technologies</span>
               </h2>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Tools and technologies I use to bring ideas to life
+                The tools and technologies I leverage to build robust applications
               </p>
             </motion.div>
 
@@ -426,7 +419,7 @@ export default function Index() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" ref={projectsRef} className="py-24 px-6">
+      <section id="projects" ref={projectsRef} className="py-24 px-6 relative z-10">
         <div className="max-w-7xl mx-auto">
           <motion.div
             variants={staggerContainer}
@@ -441,7 +434,7 @@ export default function Index() {
                 Featured <span className="text-gradient">Projects</span>
               </h2>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                A selection of projects showcasing my skills and passion for development
+                A selection of projects demonstrating full-stack expertise and system design
               </p>
             </motion.div>
 
@@ -504,7 +497,7 @@ export default function Index() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" ref={contactRef} className="py-24 px-6 bg-card/30 backdrop-blur-sm">
+      <section id="contact" ref={contactRef} className="py-24 px-6 relative z-10">
         <div className="max-w-4xl mx-auto">
           <motion.div
             variants={staggerContainer}

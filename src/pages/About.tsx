@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { GraduationCap, Code2, Shield, Wrench, Brain, Users, Trophy } from "lucide-react";
+import { GraduationCap, Code2, Shield, Wrench, Brain, Trophy } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Scene3DSimple from "@/components/Scene3DSimple";
@@ -20,17 +20,17 @@ const skillCategories = [
   {
     icon: Code2,
     title: "Frontend",
-    items: ["React 19", "Next.js 16", "Tailwind CSS", "HTML5/CSS3", "Bootstrap"],
+    items: ["React 19", "Next.js 16", "Tailwind CSS", "HTML5/CSS3", "Bootstrap", "SSR"],
   },
   {
     icon: Wrench,
     title: "Backend",
-    items: ["Node.js", "Express.js", "Next.js API", "Flask", "RESTful APIs", "JWT"],
+    items: ["Node.js", "Express.js", "Next.js API Routes", "Flask", "RESTful APIs", "JWT"],
   },
   {
     icon: Wrench,
     title: "Databases",
-    items: ["MySQL 8", "MongoDB", "Prisma ORM"],
+    items: ["MySQL 8", "MongoDB", "Prisma ORM", "Query Optimization", "Indexing"],
   },
   {
     icon: Shield,
@@ -48,22 +48,25 @@ const education = [
   {
     degree: "BS Computer Science",
     school: "FAST NUCES, Karachi",
-    year: "2023 - 2027",
+    year: "2023 – 2027",
+    detail: "4 semesters completed",
   },
   {
     degree: "Intermediate (Pre-Engineering)",
     school: "Adamjee Government Science College",
-    year: "2021 - 2023",
+    year: "2021 – 2023",
     grade: "84%",
   },
 ];
 
 const achievements = [
   "Developed Query Quest platform for PROCOM 2026 — a competitive SQL learning game used in the national computing olympiad",
-  "Co-Head of Software Engineering Competition in Dev Day 2026",
-  "Completed Full Web Development Course by CodeWithHarry (Udemy)",
+  "Co-Head of Software Engineering Competition at Dev Day 2026",
+  "Completed Full Web Development Course — CodeWithHarry (Udemy)",
   "Volunteered in tech workshops and coding contests (Coder's Cup)",
 ];
+
+const softSkills = ["Team Collaboration", "Clear Communication", "Fast Learner", "Deadline-Oriented", "Attention to Detail"];
 
 function AnimatedSection({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef(null);
@@ -87,7 +90,7 @@ export default function About() {
     <div className="min-h-screen bg-background relative overflow-hidden">
       <SEO 
         title="About Me" 
-        description="Learn about my journey as a Full-Stack Developer. Expertise in React, Next.js, Node.js, AI/ML, and modern web technologies. Currently pursuing BS Computer Science at FAST NUCES."
+        description="Computer Science student at FAST NUCES with hands-on experience building production-ready full-stack applications. Expertise in React, Next.js, Node.js, and AI/ML."
         keywords="About Umer Khan, Skills, Education, Experience, Computer Science"
       />
       <Scene3DSimple />
@@ -101,10 +104,11 @@ export default function About() {
             About <span className="text-gradient">Me</span>
           </h1>
           <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl">
-            I'm a junior at FAST NUCES pursuing Computer Science with a strong foundation in full-stack development 
-            and a passion for building scalable, user-centric applications. Currently expanding my skill set into 
-            Machine Learning with focused study in Deep Learning. Eager to contribute technical skills and innovative 
-            problem-solving abilities as a software engineering intern.
+            Computer Science student at FAST NUCES with hands-on experience building production-ready 
+            full-stack applications. Proven ability to design scalable databases, implement enterprise 
+            authentication, and deliver responsive UIs. Currently expanding into Machine Learning with 
+            focused study in Deep Learning. Seeking a software engineering internship to contribute to 
+            impactful projects using Next.js, React, and modern databases.
           </p>
         </AnimatedSection>
 
@@ -118,12 +122,13 @@ export default function About() {
             {education.map((edu) => (
               <div
                 key={edu.degree}
-                className="p-5 rounded-lg border border-border bg-card card-hover"
+                className="p-5 rounded-lg border border-border bg-card/80 backdrop-blur-sm card-hover"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                   <div>
                     <h3 className="font-semibold text-foreground">{edu.degree}</h3>
                     <p className="text-sm text-muted-foreground">{edu.school}</p>
+                    {edu.detail && <p className="text-xs text-muted-foreground mt-1">{edu.detail}</p>}
                   </div>
                   <div className="text-right">
                     <span className="text-sm font-mono text-primary">{edu.year}</span>
@@ -147,7 +152,7 @@ export default function About() {
             {skillCategories.map((cat) => (
               <div
                 key={cat.title}
-                className="p-5 rounded-lg border border-border bg-card card-hover"
+                className="p-5 rounded-lg border border-border bg-card/80 backdrop-blur-sm card-hover"
               >
                 <div className="flex items-center gap-2 mb-3">
                   <cat.icon size={16} className="text-primary" />
@@ -168,17 +173,35 @@ export default function About() {
           </div>
         </AnimatedSection>
 
+        {/* Soft Skills */}
+        <AnimatedSection className="mb-16">
+          <div className="flex items-center gap-3 mb-6">
+            <Brain className="text-primary" size={22} />
+            <h2 className="text-2xl font-bold">Soft Skills</h2>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {softSkills.map((skill) => (
+              <span
+                key={skill}
+                className="px-4 py-2 text-sm rounded-lg border border-border bg-card/80 backdrop-blur-sm text-muted-foreground card-hover"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </AnimatedSection>
+
         {/* Achievements */}
         <AnimatedSection>
           <div className="flex items-center gap-3 mb-6">
             <Trophy className="text-primary" size={22} />
-            <h2 className="text-2xl font-bold">Achievements</h2>
+            <h2 className="text-2xl font-bold">Achievements & Involvement</h2>
           </div>
           <div className="space-y-3">
             {achievements.map((a, i) => (
               <div
                 key={i}
-                className="flex gap-3 p-4 rounded-lg border border-border bg-card card-hover"
+                className="flex gap-3 p-4 rounded-lg border border-border bg-card/80 backdrop-blur-sm card-hover"
               >
                 <span className="text-primary font-mono text-sm mt-0.5">▸</span>
                 <p className="text-sm text-muted-foreground leading-relaxed">{a}</p>
