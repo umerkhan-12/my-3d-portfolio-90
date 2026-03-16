@@ -10,24 +10,26 @@ const projects = [
   {
     title: "NADRA Citizen Services Portal",
     description:
-      "Automated government service delivery platform reducing processing time by 60% through intelligent ticket management. Designed 12-table normalized database with 13 strategic indexes reducing query time by 70%.",
+      "Enterprise-grade government service delivery platform that reduced processing time by 60% through intelligent ticket management and automated agent assignment.",
     details: [
+      "Architected 12-table normalized database with Prisma ORM, complex relationships & cascade operations",
+      "Optimized performance with 13 strategic indexes — reduced query time by 70%",
       "Multi-role authentication (USER/AGENT/ADMIN) with OTP verification & rate limiting",
-      "Smart load-balancing algorithm for automatic agent assignment",
-      "Payment system with idempotency protection & 4-stage delivery tracking",
-      "Bilingual AI chatbot (English/Urdu) using Flask + Hugging Face API",
+      "Smart load-balancing algorithm for automatic agent assignment based on workload",
+      "Payment system with idempotency protection & 4-stage delivery tracking with email notifications",
+      "Bilingual AI chatbot (English/Urdu) powered by Flask + Hugging Face API",
     ],
-    tags: ["Next.js", "React", "Prisma", "MySQL", "Flask", "Hugging Face"],
+    tags: ["Next.js", "React", "Prisma", "MySQL", "NextAuth", "Flask", "Hugging Face"],
     github: "https://github.com/umerkhan-12",
   },
   {
     title: "Voice Assistant AI",
     description:
-      "Hands-free voice-controlled assistant for task automation with 95% speech recognition accuracy. Integrates speech-to-text and text-to-speech with natural voice synthesis.",
+      "Intelligent voice-controlled assistant achieving 95% speech recognition accuracy for hands-free task automation with natural voice synthesis.",
     details: [
-      "Built with Python, SpeechRecognition, and Edge TTS",
-      "Interactive Tkinter GUI with event-driven architecture",
-      "Supports 10+ commands: web search, time/date, app launching",
+      "Integrated speech-to-text and text-to-speech with natural voice synthesis",
+      "Built interactive Tkinter GUI with event-driven architecture for async inputs",
+      "Supports 10+ commands: web search, time/date queries, and application launching",
     ],
     tags: ["Python", "SpeechRecognition", "Edge TTS", "Tkinter"],
     github: "https://github.com/umerkhan-12",
@@ -35,24 +37,47 @@ const projects = [
   {
     title: "Spotify Clone",
     description:
-      "Pixel-perfect Spotify UI replica demonstrating advanced frontend skills without frameworks. 100% mobile responsive with DOM manipulation and Audio API.",
+      "Pixel-perfect Spotify UI replica built entirely with vanilla technologies — demonstrating advanced frontend skills without relying on frameworks.",
     details: [
-      "Custom audio controls, progress bar, and volume slider",
-      "Dynamic playlist system with smooth animations",
-      "CSS Grid/Flexbox responsive layout",
+      "Custom audio controls with progress bar and volume slider",
+      "Dynamic playlist system with smooth CSS animations",
+      "100% mobile responsive layout using CSS Grid/Flexbox and Audio API",
     ],
     tags: ["HTML", "CSS", "JavaScript", "Audio API"],
     github: "https://github.com/umerkhan-12",
   },
   {
+    title: "PassMag — Password Manager",
+    description:
+      "Secure local-first password management tool with full CRUD operations, real-time UI updates, and a polished responsive interface.",
+    details: [
+      "Complete CRUD system with real-time UI updates and toast notifications",
+      "Password visibility toggle, search/filter, and copy-to-clipboard functionality",
+      "Client-side persistence using Local Storage API — zero external dependencies",
+    ],
+    tags: ["React", "Express.js", "Tailwind CSS", "Local Storage API"],
+    github: "https://github.com/umerkhan-12",
+  },
+  {
     title: "Query Quest — PROCOM 2026",
     description:
-      "Competitive SQL learning game platform developed for the national computing olympiad. Gamified SQL challenges for students to practice and compete.",
+      "Competitive SQL learning game platform developed for a national computing olympiad — gamified challenges with real-time scoring and leaderboards.",
     details: [
       "Built for PROCOM 2026 national computing olympiad",
-      "Interactive SQL query challenges with real-time feedback",
+      "Interactive SQL query challenges with real-time feedback and scoring",
     ],
     tags: ["Web Development", "SQL", "Gamification"],
+    github: "https://github.com/umerkhan-12",
+  },
+  {
+    title: "Palindrome Checker",
+    description:
+      "Educational GUI tool for verifying palindrome strings using both recursive and iterative algorithms with visual feedback.",
+    details: [
+      "Case-insensitive checking with input validation and color-coded results",
+      "Event-driven programming with an intuitive Tkinter interface",
+    ],
+    tags: ["Python", "Tkinter", "Algorithms"],
     github: "https://github.com/umerkhan-12",
   },
 ];
@@ -67,7 +92,7 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="rounded-lg border border-border bg-card overflow-hidden card-hover group"
+      className="rounded-lg border border-border bg-card/80 backdrop-blur-sm overflow-hidden card-hover group"
     >
       {/* Top accent bar */}
       <div className="h-0.5 bg-gradient-to-r from-primary to-accent" />
@@ -120,8 +145,8 @@ export default function Projects() {
     <div className="min-h-screen bg-background relative overflow-hidden">
       <SEO 
         title="Projects" 
-        description="Explore my portfolio of web development projects including NADRA Citizen Services Portal, Voice Assistant AI, Spotify Clone, and more. Built with React, Next.js, Node.js, and AI/ML technologies."
-        keywords="Projects, Portfolio, Web Development, React Projects, Next.js Projects, Full-Stack Projects"
+        description="Explore my portfolio of production-ready web applications including NADRA Citizen Services Portal, Voice Assistant AI, PassMag Password Manager, and more."
+        keywords="Projects, Portfolio, Web Development, React, Next.js, Full-Stack, Python"
       />
       <Scene3DSimple />
       <Navbar />
@@ -138,8 +163,8 @@ export default function Projects() {
             Featured <span className="text-gradient">Projects</span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl">
-            A selection of projects showcasing my expertise in full-stack development, 
-            database design, and building scalable applications.
+            Production-ready applications showcasing expertise in full-stack architecture, 
+            database optimization, and scalable system design.
           </p>
         </motion.div>
 
