@@ -114,10 +114,10 @@ export default function Index() {
       <Navbar />
 
       {/* Hero Section */}
-      <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Video Background - Left Side */}
-        <div className="absolute left-0 top-0 w-full lg:w-1/2 h-full z-[1]">
-          <div className="relative w-full h-full overflow-hidden bg-background">
+      <section id="home" className="relative min-h-screen flex flex-col lg:flex-row items-stretch overflow-hidden">
+        {/* Video Background - Top on mobile, Left on desktop */}
+        <div className="relative w-full lg:w-1/2 h-[40vh] lg:h-auto lg:min-h-screen">
+          <div className="absolute inset-0 overflow-hidden bg-background">
             <video
               autoPlay
               loop
@@ -128,13 +128,12 @@ export default function Index() {
             >
               <source src="/videos/video1.mp4" type="video/mp4" />
             </video>
-            {/* Subtle green tint overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-primary/5 to-background/40" />
+            <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-transparent via-transparent to-background/60" />
           </div>
         </div>
         
-        {/* Text Content - Right Side */}
-        <div className="relative z-10 w-full lg:w-1/2 ml-auto px-6 lg:px-12 xl:px-24 flex flex-col justify-center lg:text-left text-center min-h-screen py-20">
+        {/* Text Content - Below on mobile, Right on desktop */}
+        <div className="relative z-10 w-full lg:w-1/2 px-6 lg:px-12 xl:px-24 flex flex-col justify-center lg:text-left text-center py-12 lg:py-20">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
