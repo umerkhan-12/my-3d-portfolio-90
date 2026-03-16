@@ -115,24 +115,26 @@ export default function Index() {
 
       {/* Hero Section */}
       <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background z-[1]" />
-        
-        {/* Video Background */}
-        <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-20"
-          >
-            <source src="/videos/video1.mp4" type="video/mp4" />
-          </video>
+        {/* Video Background - Left Side */}
+        <div className="absolute left-0 top-0 w-full lg:w-1/2 h-full z-[1]">
+          <div className="relative w-full h-full overflow-hidden bg-background">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover opacity-90"
+              onError={(e) => console.error('Video failed to load:', e)}
+            >
+              <source src="/videos/video1.mp4" type="video/mp4" />
+            </video>
+            {/* Subtle green tint overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-background/20 via-primary/5 to-background/40" />
+          </div>
         </div>
         
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col lg:flex-row items-center gap-12 py-20">
-          {/* Text Content */}
-          <div className="flex-1 lg:text-left text-center">
+        {/* Text Content - Right Side */}
+        <div className="relative z-10 w-full lg:w-1/2 ml-auto px-6 lg:px-12 xl:px-24 flex flex-col justify-center lg:text-left text-center min-h-screen py-20">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
