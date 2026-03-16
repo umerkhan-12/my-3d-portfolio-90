@@ -230,7 +230,6 @@ export default function Index() {
               ))}
             </motion.div>
           </div>
-        </div>
 
         {/* Scroll Indicator */}
         <motion.div
