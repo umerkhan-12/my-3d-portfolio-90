@@ -353,7 +353,7 @@ export default function Index() {
 
             <motion.div variants={fadeUp} className="mt-8 text-center">
               <Link to="/about">
-                <Button variant="outline" className="group">
+                <Button variant="outline" className="group border-primary/30 text-primary hover:bg-primary/10 hover:text-primary">
                   Learn More About Me
                   <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
