@@ -310,7 +310,7 @@ export default function Index() {
                     <div className="space-y-4">
                       <div>
                         <h4 className="font-semibold text-foreground">BS Computer Science</h4>
-                        <p className="text-sm text-muted-foreground">FAST NUCES, Karachi — 4 semesters completed</p>
+                        <p className="text-sm text-muted-foreground">FAST NUCES, Karachi — 6 semesters completed</p>
                         <p className="text-xs text-primary mt-1">2023 – 2027</p>
                       </div>
                       <p className="text-sm text-muted-foreground leading-relaxed">
