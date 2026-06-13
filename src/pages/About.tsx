@@ -49,7 +49,7 @@ const education = [
     degree: "BS Computer Science",
     school: "FAST NUCES, Karachi",
     year: "2023 – 2027",
-    detail: "4 semesters completed",
+    detail: "6 semesters completed",
   },
   {
     degree: "Intermediate (Pre-Engineering)",
