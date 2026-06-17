@@ -88,7 +88,7 @@ export default function Navbar() {
             </Link>
           ))}
           <a
-            href="/resume.pdf"
+            href="/Umer_Khan_Resume.pdf"
             download
             className="block px-6 py-3 text-sm text-primary"
           >
