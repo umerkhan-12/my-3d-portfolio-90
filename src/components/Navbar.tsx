@@ -57,7 +57,7 @@ export default function Navbar() {
             download
             className="flex items-center gap-2 text-sm px-4 py-2 rounded-md border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
           >
-            <FileDown size={14} />
+            <FileDown size={20} />
             Resume
           </a>
         </div>
