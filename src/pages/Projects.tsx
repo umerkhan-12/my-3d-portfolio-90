@@ -33,6 +33,7 @@ const projects = [
     ],
     tags: ["Python", "SpeechRecognition", "Edge TTS", "Tkinter"],
     github: "https://github.com/umerkhan-12",
+    youtube: "https://www.youtube.com/embed/MiIJ-227GgI?autoplay=1&mute=1&start=5&rel=0",
   },
   {
     title: "Spotify Clone",
