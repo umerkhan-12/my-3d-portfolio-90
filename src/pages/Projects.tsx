@@ -1,6 +1,6 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { ExternalLink, Github, ArrowRight } from "lucide-react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
+import { ExternalLink, Github, ArrowRight, Play } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Scene3DSimple from "@/components/Scene3DSimple";
