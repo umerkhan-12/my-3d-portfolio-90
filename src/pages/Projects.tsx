@@ -58,6 +58,7 @@ const projects = [
     ],
     tags: ["React", "Express.js", "Tailwind CSS", "Local Storage API"],
     github: "https://github.com/umerkhan-12",
+    youtube: "https://www.youtube.com/embed/gPom3ioTWRE?autoplay=1&mute=1&rel=0",
   },
   {
     title: "Query Quest — PROCOM 2026",
@@ -86,6 +87,7 @@ const projects = [
 function ProjectCard({ project, index }: { project: typeof projects[0]; index: number }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <motion.div
@@ -93,10 +95,41 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: index * 0.1 }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className="rounded-lg border border-border bg-card/80 backdrop-blur-sm overflow-hidden card-hover group"
     >
       {/* Top accent bar */}
       <div className="h-0.5 bg-gradient-to-r from-primary to-accent" />
+
+      {/* YouTube preview on hover */}
+      {project.youtube && (
+        <div className="relative w-full aspect-video bg-black/50 overflow-hidden">
+          <AnimatePresence>
+            {isHovered && (
+              <motion.iframe
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                src={project.youtube}
+                title={`${project.title} demo`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            )}
+          </AnimatePresence>
+          {!isHovered && (
+            <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/60">
+              <div className="text-center">
+                <Play size={40} className="mx-auto mb-2 text-primary/70" />
+                <p className="text-xs font-mono">Hover to preview demo</p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="p-6 md:p-8">
         <div className="flex items-start justify-between mb-4">
