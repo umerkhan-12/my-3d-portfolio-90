@@ -85,10 +85,16 @@ const projects = [
   },
 ];
 
+function getYoutubeId(url: string): string | null {
+  const match = url.match(/embed\/([a-zA-Z0-9_-]+)/);
+  return match ? match[1] : null;
+}
+
 function ProjectCard({ project, index }: { project: typeof projects[0]; index: number }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
   const [isHovered, setIsHovered] = useState(false);
+  const youtubeId = project.youtube ? getYoutubeId(project.youtube) : null;
 
   return (
     <motion.div
@@ -103,9 +109,20 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
       {/* Top accent bar */}
       <div className="h-0.5 bg-gradient-to-r from-primary to-accent" />
 
-      {/* YouTube preview on hover */}
+      {/* YouTube preview: thumbnail by default, iframe on hover */}
       {project.youtube && (
-        <div className="relative w-full aspect-video bg-black/50 overflow-hidden">
+        <div className="relative w-full aspect-video bg-black overflow-hidden">
+          {youtubeId && (
+            <img
+              src={`https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`}
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+              }}
+              alt={`${project.title} thumbnail`}
+              className="absolute inset-0 w-full h-full object-cover"
+              loading="lazy"
+            />
+          )}
           <AnimatePresence>
             {isHovered && (
               <motion.iframe
@@ -117,15 +134,17 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
                 title={`${project.title} demo`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                className="absolute inset-0 w-full h-full"
+                className="absolute inset-0 w-full h-full z-10"
               />
             )}
           </AnimatePresence>
           {!isHovered && (
-            <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/60">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity">
               <div className="text-center">
-                <Play size={40} className="mx-auto mb-2 text-primary/70" />
-                <p className="text-xs font-mono">Hover to preview demo</p>
+                <div className="w-14 h-14 rounded-full bg-primary/90 flex items-center justify-center mx-auto mb-2 shadow-lg">
+                  <Play size={24} className="text-primary-foreground ml-1" fill="currentColor" />
+                </div>
+                <p className="text-xs font-mono text-white/90">Hover to preview demo</p>
               </div>
             </div>
           )}
