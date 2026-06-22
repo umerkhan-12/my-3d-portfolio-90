@@ -21,6 +21,7 @@ const projects = [
     ],
     tags: ["Next.js", "React", "Prisma", "MySQL", "NextAuth", "Flask", "Hugging Face"],
     github: "https://github.com/umerkhan-12",
+    youtube: "https://www.youtube.com/embed/087zlPJ2-vs?autoplay=1&mute=1&rel=0",
   },
   {
     title: "Voice Assistant AI",
