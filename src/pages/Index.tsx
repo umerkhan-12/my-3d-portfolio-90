@@ -37,10 +37,19 @@ const skills = {
 
 const projects = [
   {
+    title: "OMR.AI — Agentic AI Personal Assistant",
+    description: "A fully agentic AI personal assistant built on n8n with a custom Python/Streamlit frontend. Connects Gmail, Google Calendar, Google Docs, and job search APIs through intelligent multi-step workflows.",
+    tags: ["n8n", "Claude API", "Python", "Streamlit", "OpenRouter"],
+    github: "https://github.com/umerkhan-12",
+    demo: "https://www.linkedin.com/posts/umer-khan10_ai-automation-n8n-ugcPost-7477780554365616128-55rC/",
+    highlights: "Agentic AI • n8n workflows • Claude API • Streamlit UI"
+  },
+  {
     title: "NADRA Citizen Services Portal",
     description: "Enterprise-grade government platform that reduced processing time by 60% with intelligent ticket management, multi-role auth, and bilingual AI chatbot.",
     tags: ["Next.js", "Prisma", "MySQL", "Flask", "AI"],
     github: "https://github.com/umerkhan-12",
+    demo: "https://www.linkedin.com/posts/umer-khan10_fullstackdeveloper-javascript-typescript-ugcPost-7407316108757733376-9lDM/",
     highlights: "60% faster processing • 12-table DB • Bilingual AI chatbot"
   },
   {
