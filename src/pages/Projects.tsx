@@ -117,7 +117,7 @@ function getYoutubeId(url: string): string | null {
   return match ? match[1] : null;
 }
 
-function ProjectCard({ project, index }: { project: typeof projects[0]; index: number }) {
+function ProjectCard({ project, index }: { project: Project; index: number }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
   const [isHovered, setIsHovered] = useState(false);
