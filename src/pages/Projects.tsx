@@ -6,7 +6,34 @@ import Footer from "@/components/Footer";
 import Scene3DSimple from "@/components/Scene3DSimple";
 import SEO from "@/components/SEO";
 
-const projects = [
+interface Project {
+  title: string;
+  description: string;
+  details: string[];
+  tags: string[];
+  github: string;
+  youtube?: string;
+  demo?: string;
+}
+
+const projects: Project[] = [
+  {
+    title: "OMR.AI — Agentic AI Personal Assistant",
+    description:
+      "A fully agentic AI personal assistant built on n8n with a custom Python/Streamlit frontend. OMR.AI connects Gmail, Google Calendar, Google Docs, and job search APIs through intelligent multi-step workflows — designed as a real productivity tool, not a demo.",
+    details: [
+      "Multi-step agentic workflows orchestrated via n8n",
+      "Claude API integration with tool-calling and memory",
+      "Daily automated job-matching pipeline with AI-generated draft emails",
+      "Gmail, Google Calendar & Google Docs connected through secure APIs",
+      "Telegram notification system for real-time updates",
+      "Custom Streamlit frontend for conversational user interface",
+      "OpenRouter integration for model fallback management",
+    ],
+    tags: ["n8n", "Claude API", "Python", "Streamlit", "Gmail API", "Google Calendar", "Telegram", "OpenRouter"],
+    github: "https://github.com/umerkhan-12",
+    demo: "https://www.linkedin.com/posts/umer-khan10_ai-automation-n8n-ugcPost-7477780554365616128-55rC/",
+  },
   {
     title: "NADRA Citizen Services Portal",
     description:
