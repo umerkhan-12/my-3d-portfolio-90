@@ -39,6 +39,11 @@ const skillCategories = [
   },
   {
     icon: Brain,
+    title: "AI / Automation",
+    items: ["LLM", "Gen AI", "Automation", "Agentic Workflow", "n8n", "Claude API", "OpenRouter"],
+  },
+  {
+    icon: Brain,
     title: "Core CS",
     items: ["OOP", "Data Structures", "Algorithms", "DBMS", "Operating Systems"],
   },

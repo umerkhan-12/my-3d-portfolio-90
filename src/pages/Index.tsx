@@ -32,6 +32,7 @@ const skills = {
   "Backend": ["Node.js", "Express.js", "Flask", "REST APIs", "JWT"],
   "Database": ["MySQL 8", "MongoDB", "Prisma ORM"],
   "Security": ["NextAuth.js", "bcrypt", "OTP", "RBAC", "Rate Limiting"],
+  "AI & Automation": ["LLM", "Gen AI", "Automation", "Agentic Workflow", "n8n", "Claude API"],
   "Tools": ["Git", "Docker", "Vite", "Postman", "VS Code"],
 };
 
