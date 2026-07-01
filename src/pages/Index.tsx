@@ -476,7 +476,7 @@ export default function Index() {
                         ))}
                       </div>
 
-                      <div className="flex gap-3 pt-2">
+                      <div className="flex flex-wrap gap-3 pt-2">
                         <a
                           href={project.github}
                           target="_blank"
@@ -486,6 +486,17 @@ export default function Index() {
                           <Github className="w-4 h-4" />
                           View Code
                         </a>
+                        {project.demo && (
+                          <a
+                            href={project.demo}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            Watch Demo
+                          </a>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
