@@ -6,7 +6,34 @@ import Footer from "@/components/Footer";
 import Scene3DSimple from "@/components/Scene3DSimple";
 import SEO from "@/components/SEO";
 
-const projects = [
+interface Project {
+  title: string;
+  description: string;
+  details: string[];
+  tags: string[];
+  github: string;
+  youtube?: string;
+  demo?: string;
+}
+
+const projects: Project[] = [
+  {
+    title: "OMR.AI — Agentic AI Personal Assistant",
+    description:
+      "A fully agentic AI personal assistant built on n8n with a custom Python/Streamlit frontend. OMR.AI connects Gmail, Google Calendar, Google Docs, and job search APIs through intelligent multi-step workflows — designed as a real productivity tool, not a demo.",
+    details: [
+      "Multi-step agentic workflows orchestrated via n8n",
+      "Claude API integration with tool-calling and memory",
+      "Daily automated job-matching pipeline with AI-generated draft emails",
+      "Gmail, Google Calendar & Google Docs connected through secure APIs",
+      "Telegram notification system for real-time updates",
+      "Custom Streamlit frontend for conversational user interface",
+      "OpenRouter integration for model fallback management",
+    ],
+    tags: ["n8n", "Claude API", "Python", "Streamlit", "Gmail API", "Google Calendar", "Telegram", "OpenRouter"],
+    github: "https://github.com/umerkhan-12",
+    demo: "https://www.linkedin.com/posts/umer-khan10_ai-automation-n8n-ugcPost-7477780554365616128-55rC/",
+  },
   {
     title: "NADRA Citizen Services Portal",
     description:
@@ -90,7 +117,7 @@ function getYoutubeId(url: string): string | null {
   return match ? match[1] : null;
 }
 
-function ProjectCard({ project, index }: { project: typeof projects[0]; index: number }) {
+function ProjectCard({ project, index }: { project: Project; index: number }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
   const [isHovered, setIsHovered] = useState(false);
@@ -179,7 +206,7 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
           ))}
         </ul>
 
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1.5 mb-5">
           {project.tags.map((tag) => (
             <span
               key={tag}
@@ -189,6 +216,19 @@ function ProjectCard({ project, index }: { project: typeof projects[0]; index: n
             </span>
           ))}
         </div>
+
+        {project.demo && (
+          <a
+            href={project.demo}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            <Play size={16} />
+            Watch Demo
+            <ExternalLink size={14} className="opacity-70" />
+          </a>
+        )}
       </div>
     </motion.div>
   );
