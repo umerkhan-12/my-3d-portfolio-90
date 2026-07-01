@@ -206,7 +206,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           ))}
         </ul>
 
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1.5 mb-5">
           {project.tags.map((tag) => (
             <span
               key={tag}
@@ -216,6 +216,19 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             </span>
           ))}
         </div>
+
+        {project.demo && (
+          <a
+            href={project.demo}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            <Play size={16} />
+            Watch Demo
+            <ExternalLink size={14} className="opacity-70" />
+          </a>
+        )}
       </div>
     </motion.div>
   );
