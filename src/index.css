@@ -302,6 +302,39 @@
     pointer-events: none;
   }
 
+  /* --- Real 3D depth on cards --- */
+  /* The card becomes a 3D stage; children can sit at different depths. */
+  .spotlight-card {
+    transform-style: preserve-3d;
+  }
+  /* Lift inner content toward the viewer as the card tilts. */
+  .depth-1 { transform: translateZ(18px); }
+  .depth-2 { transform: translateZ(36px); }
+  .depth-3 { transform: translateZ(54px); }
+
+  /* Perspective wrapper for grids of tilting cards. */
+  .stage-3d {
+    perspective: 1400px;
+    perspective-origin: 50% 40%;
+  }
+
+  /* Extruded display type — stacked shadows read as depth, not blur. */
+  .text-3d {
+    text-shadow:
+      0 1px 0 hsl(var(--border-strong)),
+      0 2px 0 hsl(var(--border-subtle)),
+      0 3px 0 hsl(var(--surface-3)),
+      0 4px 0 hsl(var(--surface-2)),
+      0 6px 14px hsl(0 0% 0% / 0.55);
+  }
+
+  /* Flagship project ribbon */
+  .ribbon {
+    background: var(--gradient-aurora);
+    background-size: 200% 200%;
+    animation: gradient-drift 6s ease infinite;
+  }
+
   /* --- Schema spine: connector dot for project nodes --- */
   .node-dot {
     position: relative;
@@ -359,6 +392,8 @@
     transform: none !important;
     transition: border-color 0.3s ease;
   }
+  .depth-1, .depth-2, .depth-3 { transform: none; }
+  .ribbon { animation: none; }
   .spotlight-card::before,
   .spotlight-card::after {
     display: none;

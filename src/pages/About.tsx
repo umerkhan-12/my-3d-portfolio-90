@@ -1,76 +1,18 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { GraduationCap, Code2, Shield, Wrench, Brain, Trophy } from "lucide-react";
+import { GraduationCap, Code2, Trophy, Briefcase } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
+import SpotlightCard from "@/components/SpotlightCard";
+import {
+  profile, experience, education, skills, achievements,
+} from "@/data/profile";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0 },
 };
-
-const skillCategories = [
-  {
-    icon: Code2,
-    title: "Languages",
-    items: ["JavaScript (ES6+)", "TypeScript", "Python", "C/C++", "SQL"],
-  },
-  {
-    icon: Code2,
-    title: "Frontend",
-    items: ["React 19", "Next.js 16", "Tailwind CSS", "HTML5/CSS3", "Bootstrap", "SSR"],
-  },
-  {
-    icon: Wrench,
-    title: "Backend",
-    items: ["Node.js", "Express.js", "Next.js API Routes", "Flask", "RESTful APIs", "JWT"],
-  },
-  {
-    icon: Wrench,
-    title: "Databases",
-    items: ["MySQL 8", "MongoDB", "Prisma ORM", "Query Optimization", "Indexing"],
-  },
-  {
-    icon: Shield,
-    title: "Security",
-    items: ["NextAuth.js", "bcrypt", "OTP Verification", "RBAC", "Rate Limiting", "CSRF"],
-  },
-  {
-    icon: Brain,
-    title: "AI / Automation",
-    items: ["LLM", "Gen AI", "Automation", "Agentic Workflow", "n8n", "Claude API", "OpenRouter"],
-  },
-  {
-    icon: Brain,
-    title: "Core CS",
-    items: ["OOP", "Data Structures", "Algorithms", "DBMS", "Operating Systems"],
-  },
-];
-
-const education = [
-  {
-    degree: "BS Computer Science",
-    school: "FAST NUCES, Karachi",
-    year: "2023 – 2027",
-    detail: "6 semesters completed",
-  },
-  {
-    degree: "Intermediate (Pre-Engineering)",
-    school: "Adamjee Government Science College",
-    year: "2021 – 2023",
-    grade: "84%",
-  },
-];
-
-const achievements = [
-  "Developed Query Quest platform for PROCOM 2026 — a competitive SQL learning game used in the national computing olympiad",
-  "Co-Head of Software Engineering Competition at Dev Day 2026",
-  "Completed Full Web Development Course — CodeWithHarry (Udemy)",
-  "Volunteered in tech workshops and coding contests (Coder's Cup)",
-];
-
-const softSkills = ["Team Collaboration", "Clear Communication", "Fast Learner", "Deadline-Oriented", "Attention to Detail"];
 
 function AnimatedSection({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef(null);
@@ -115,6 +57,43 @@ export default function About() {
           </p>
         </AnimatedSection>
 
+        {/* Experience */}
+        <AnimatedSection className="mb-16">
+          <div className="mb-6 flex items-center gap-3">
+            <Briefcase className="text-primary" size={22} />
+            <h2 className="text-2xl font-bold">Experience</h2>
+          </div>
+          <div className="space-y-4">
+            {experience.map((job) => (
+              <div
+                key={job.company}
+                className="rounded-lg border border-border bg-card/80 p-5 backdrop-blur-sm card-hover"
+              >
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <h3 className="font-semibold text-foreground">{job.role}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {job.company} · {job.parent}
+                    </p>
+                  </div>
+                  <div className="text-left sm:text-right">
+                    <span className="font-mono text-sm text-primary">{job.period}</span>
+                    <p className="font-mono text-xs text-muted-foreground">{job.mode}</p>
+                  </div>
+                </div>
+                <ul className="mt-3 space-y-2">
+                  {job.points.map((point) => (
+                    <li key={point} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </AnimatedSection>
+
         {/* Education */}
         <AnimatedSection className="mb-16">
           <div className="flex items-center gap-3 mb-6">
@@ -132,12 +111,14 @@ export default function About() {
                     <h3 className="font-semibold text-foreground">{edu.degree}</h3>
                     <p className="text-sm text-muted-foreground">{edu.school}</p>
                     {edu.detail && <p className="text-xs text-muted-foreground mt-1">{edu.detail}</p>}
+                    {edu.coursework.length > 0 && (
+                      <p className="mt-2 max-w-md font-mono text-[11px] leading-relaxed text-muted-foreground/70">
+                        {edu.coursework.join(" · ")}
+                      </p>
+                    )}
                   </div>
                   <div className="text-right">
                     <span className="text-sm font-mono text-primary">{edu.year}</span>
-                    {edu.grade && (
-                      <p className="text-xs text-muted-foreground">{edu.grade}</p>
-                    )}
                   </div>
                 </div>
               </div>
@@ -152,14 +133,14 @@ export default function About() {
             <h2 className="text-2xl font-bold">Technical Skills</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {skillCategories.map((cat) => (
+            {skills.map((cat) => (
               <div
-                key={cat.title}
+                key={cat.category}
                 className="p-5 rounded-lg border border-border bg-card/80 backdrop-blur-sm card-hover"
               >
                 <div className="flex items-center gap-2 mb-3">
-                  <cat.icon size={16} className="text-primary" />
-                  <h3 className="font-semibold text-sm text-foreground">{cat.title}</h3>
+                  <Code2 size={16} className="text-primary" />
+                  <h3 className="font-semibold text-sm text-foreground">{cat.category}</h3>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {cat.items.map((item) => (
@@ -176,38 +157,25 @@ export default function About() {
           </div>
         </AnimatedSection>
 
-        {/* Soft Skills */}
-        <AnimatedSection className="mb-16">
-          <div className="flex items-center gap-3 mb-6">
-            <Brain className="text-primary" size={22} />
-            <h2 className="text-2xl font-bold">Soft Skills</h2>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {softSkills.map((skill) => (
-              <span
-                key={skill}
-                className="px-4 py-2 text-sm rounded-lg border border-border bg-card/80 backdrop-blur-sm text-muted-foreground card-hover"
-              >
-                {skill}
-              </span>
-            ))}
-          </div>
-        </AnimatedSection>
-
-        {/* Achievements */}
         <AnimatedSection>
           <div className="flex items-center gap-3 mb-6">
             <Trophy className="text-primary" size={22} />
             <h2 className="text-2xl font-bold">Achievements & Involvement</h2>
           </div>
           <div className="space-y-3">
-            {achievements.map((a, i) => (
+            {achievements.map((a) => (
               <div
-                key={i}
+                key={a.title}
                 className="flex gap-3 p-4 rounded-lg border border-border bg-card/80 backdrop-blur-sm card-hover"
               >
                 <span className="text-primary font-mono text-sm mt-0.5">▸</span>
-                <p className="text-sm text-muted-foreground leading-relaxed">{a}</p>
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {a.title}
+                    <span className="ml-2 font-mono text-xs font-normal text-primary/80">{a.context}</span>
+                  </h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{a.detail}</p>
+                </div>
               </div>
             ))}
           </div>

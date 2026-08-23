@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
  * from the left, then the display heading.
  */
 export default function SectionHeader({
+  chapter,
   eyebrow,
   title,
   accent,
@@ -13,6 +14,8 @@ export default function SectionHeader({
   align = "center",
   className,
 }: {
+  /** Chapter marker — the page reads as a chronological arc, so order carries meaning. */
+  chapter?: string;
   eyebrow: string;
   title: string;
   accent?: string;
@@ -36,6 +39,11 @@ export default function SectionHeader({
           centered && "justify-center"
         )}
       >
+        {chapter && (
+          <span className="font-mono text-xs tabular-nums text-muted-foreground/60">
+            {chapter}
+          </span>
+        )}
         <span className="font-mono text-xs tracking-[0.2em] text-primary uppercase">
           {eyebrow}
         </span>

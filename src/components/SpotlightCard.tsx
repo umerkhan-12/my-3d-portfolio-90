@@ -32,8 +32,8 @@ export default function SpotlightCard({
     ref.current.style.setProperty("--spot-opacity", "1");
 
     if (tilt) {
-      ref.current.style.setProperty("--tilt-y", `${(px - 0.5) * 8}deg`);
-      ref.current.style.setProperty("--tilt-x", `${(0.5 - py) * 8}deg`);
+      ref.current.style.setProperty("--tilt-y", `${(px - 0.5) * 14}deg`);
+      ref.current.style.setProperty("--tilt-x", `${(0.5 - py) * 14}deg`);
     }
   };
 

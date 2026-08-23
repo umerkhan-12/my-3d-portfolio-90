@@ -1,11 +1,13 @@
 import { motion, useInView, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import {
-  ArrowRight, Github, Linkedin, Mail, Code2, GraduationCap, Award, ExternalLink,
-  Send, MapPin, Phone, Sparkles, Rocket, Target, Users, Server, Database,
-  Terminal, ShieldCheck, Wrench, type LucideIcon,
+  ArrowRight, Github, Linkedin, Mail, Code2, GraduationCap, ExternalLink,
+  Send, MapPin, Phone, Target, Briefcase, Sparkles, Server, Database,
+  Terminal, Wrench, Brain, type LucideIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, Suspense, lazy } from "react";
+const AgentGraph = lazy(() => import("@/components/AgentGraph"));
+
 import MagneticButton from "@/components/MagneticButton";
 import ScrambleText from "@/components/ScrambleText";
 import ScrollCue from "@/components/ScrollCue";
@@ -19,9 +21,21 @@ import SpotlightCard from "@/components/SpotlightCard";
 import QueryPlan from "@/components/QueryPlan";
 import Marquee from "@/components/Marquee";
 import CountUp from "@/components/CountUp";
+import {
+  profile, roles, experience, education, skills, allTech, projects, stats,
+} from "@/data/profile";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+
+const categoryIcon: Record<string, LucideIcon> = {
+  "AI & Automation": Brain,
+  Backend: Server,
+  Databases: Database,
+  Frontend: Code2,
+  Languages: Terminal,
+  "Tools & Infra": Wrench,
+};
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -42,135 +56,6 @@ const staggerContainer = {
  * Bento cells. `span` drives the grid weighting, so the section reads as
  * composed rather than as a uniform loop.
  */
-const skills = [
-  {
-    category: "AI & Automation",
-    icon: Sparkles,
-    span: "md:col-span-2 lg:col-span-2 lg:row-span-2",
-    items: ["LLM", "Gen AI", "Automation", "Agentic Workflow", "n8n", "Claude API"],
-  },
-  {
-    category: "Backend",
-    icon: Server,
-    span: "md:col-span-2 lg:col-span-2",
-    items: ["Node.js", "Express.js", "Flask", "REST APIs", "JWT"],
-  },
-  {
-    category: "Frontend",
-    icon: Code2,
-    span: "md:col-span-2 lg:col-span-2",
-    items: ["React 19", "Next.js 16", "Tailwind CSS", "Framer Motion", "Three.js"],
-  },
-  {
-    category: "Database",
-    icon: Database,
-    span: "md:col-span-1 lg:col-span-2",
-    items: ["MySQL 8", "MongoDB", "Prisma ORM"],
-  },
-  {
-    category: "Languages",
-    icon: Terminal,
-    span: "md:col-span-1 lg:col-span-1",
-    items: ["JavaScript", "TypeScript", "Python", "C/C++", "SQL"],
-  },
-  {
-    category: "Security",
-    icon: ShieldCheck,
-    span: "md:col-span-1 lg:col-span-1",
-    items: ["NextAuth.js", "bcrypt", "OTP", "RBAC", "Rate Limiting"],
-  },
-  {
-    category: "Tools",
-    icon: Wrench,
-    span: "md:col-span-1 lg:col-span-2",
-    items: ["Git", "Docker", "Vite", "Postman", "VS Code"],
-  },
-];
-
-const roles = [
-  "Full-Stack Developer",
-  "Database Architect",
-  "AI/ML Enthusiast",
-  "Problem Solver",
-];
-
-/** Flat list for the ticker — no technology that is not already listed above. */
-const allTech = Array.from(new Set(skills.flatMap((group) => group.items)));
-
-const projects = [
-  {
-    title: "OMR.AI — Agentic AI Personal Assistant",
-    description: "A fully agentic AI personal assistant built on n8n with a custom Python/Streamlit frontend. Connects Gmail, Google Calendar, Google Docs, and job search APIs through intelligent multi-step workflows.",
-    tags: ["n8n", "Claude API", "Python", "Streamlit", "OpenRouter"],
-    plan: [
-      { label: "services chained", value: "4" },
-      { label: "orchestration", value: "n8n" },
-    ],
-    github: "https://github.com/umerkhan-12",
-    demo: "https://www.linkedin.com/posts/umer-khan10_ai-automation-n8n-ugcPost-7477780554365616128-55rC/",
-    highlights: "Agentic AI • n8n workflows • Claude API • Streamlit UI"
-  },
-  {
-    title: "NADRA Citizen Services Portal",
-    description: "Enterprise-grade government platform that reduced processing time by 60% with intelligent ticket management, multi-role auth, and bilingual AI chatbot.",
-    tags: ["Next.js", "Prisma", "MySQL", "Flask", "AI"],
-    plan: [
-      { label: "processing time", value: "-60%" },
-      { label: "normalized tables", value: "12" },
-      { label: "chatbot languages", value: "2" },
-    ],
-    github: "https://github.com/umerkhan-12",
-    demo: "https://www.linkedin.com/posts/umer-khan10_fullstackdeveloper-javascript-typescript-ugcPost-7407316108757733376-9lDM/",
-    highlights: "60% faster processing • 12-table DB • Bilingual AI chatbot"
-  },
-  {
-    title: "Voice Assistant AI",
-    description: "Hands-free voice-controlled assistant achieving 95% speech recognition accuracy. Supports 10+ commands with natural voice synthesis.",
-    tags: ["Python", "SpeechRecognition", "Edge TTS"],
-    plan: [
-      { label: "recognition accuracy", value: "95%" },
-      { label: "supported commands", value: "10+" },
-    ],
-    github: "https://github.com/umerkhan-12",
-    highlights: "95% accuracy • 10+ commands • Natural voice synthesis"
-  },
-  {
-    title: "PassMag — Password Manager",
-    description: "Secure local-first password management tool with full CRUD, real-time updates, search/filter, and copy-to-clipboard — zero external dependencies.",
-    tags: ["React", "Express.js", "Tailwind CSS"],
-    plan: [
-      { label: "storage", value: "local-first" },
-      { label: "external deps", value: "0" },
-    ],
-    github: "https://github.com/umerkhan-12",
-    highlights: "Full CRUD • Local-first • Zero dependencies"
-  },
-  {
-    title: "Spotify Clone",
-    description: "Pixel-perfect Spotify replica with custom audio controls, dynamic playlists, and 100% mobile responsive design — built without frameworks.",
-    tags: ["HTML", "CSS", "JavaScript", "Audio API"],
-    plan: [
-      { label: "mobile responsive", value: "100%" },
-      { label: "frameworks used", value: "0" },
-    ],
-    github: "https://github.com/umerkhan-12",
-    highlights: "Pixel-perfect UI • Custom audio • 100% responsive"
-  },
-];
-
-const stats: {
-  icon: LucideIcon;
-  label: string;
-  value: string;
-  count?: number;
-  suffix?: string;
-}[] = [
-  { icon: Code2, label: "Projects Built", value: "15+", count: 15, suffix: "+" },
-  { icon: Award, label: "GitHub Contributions", value: "500+", count: 500, suffix: "+" },
-  { icon: Users, label: "Open Source", value: "Active" },
-  { icon: Rocket, label: "Learning", value: "Always" },
-];
-
 export default function Index() {
   const aboutRef = useRef(null);
   const skillsRef = useRef(null);
@@ -195,8 +80,8 @@ export default function Index() {
     <div id="main" className="relative min-h-screen overflow-x-hidden">
       <SEO 
         title="Home" 
-        description="Umer Khan — Full-Stack Developer specializing in React, Next.js, Node.js, and AI/ML. Building production-ready applications with modern technologies."
-        keywords="Umer Khan, Portfolio, Full-Stack Developer, React, Next.js, Python"
+        description="Umer Khan — Full-stack developer and AI engineer. Shipping CliniBot, a commercial WhatsApp booking SaaS, while interning at Vidizmo.AI. NestJS, PostgreSQL, n8n, Claude API."
+        keywords="Umer Khan, Full-Stack Developer, AI Engineer, Agentic AI, NestJS, PostgreSQL, n8n, Claude API, CliniBot, Karachi"
       />
 
       {/* Ambient atmosphere */}
@@ -207,40 +92,38 @@ export default function Index() {
 
       {/* Hero Section */}
       <section id="home" className="relative min-h-screen flex flex-col lg:flex-row items-stretch overflow-hidden">
-        {/* Video - Top on mobile, Left on desktop */}
-        <div className="relative w-full lg:w-1/2 h-[40vh] lg:h-auto lg:min-h-screen lg:p-6 lg:pt-28">
+        {/* Hero visual: a live agent graph, not stock footage.
+            This is the architecture he actually ships. */}
+        <div className="relative w-full lg:w-1/2 h-[46vh] lg:h-auto lg:min-h-screen lg:p-6 lg:pt-28">
           <div className="relative h-full w-full overflow-hidden bg-gradient-surface lg:rounded-3xl lg:shadow-lg">
-            {/* Brand-gradient placeholder so the panel is never blank while the video decodes */}
             <div
               aria-hidden
-              className="absolute inset-0 opacity-40"
+              className="absolute inset-0"
               style={{
                 background:
-                  "radial-gradient(120% 90% at 30% 20%, hsl(var(--primary) / 0.18), transparent 60%), radial-gradient(100% 80% at 80% 90%, hsl(var(--accent) / 0.14), transparent 60%)",
+                  "radial-gradient(120% 90% at 30% 20%, hsl(var(--primary) / 0.14), transparent 60%), radial-gradient(100% 80% at 80% 90%, hsl(var(--accent) / 0.12), transparent 60%)",
               }}
             />
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="metadata"
-              className="absolute inset-0 h-full w-full object-cover"
-              onError={(e) => console.error('Video failed to load:', e)}
-            >
-              <source src="/videos/video1.mp4" type="video/mp4" />
-            </video>
-            {/* Single directional mask, only where the video meets the text column */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60 lg:bg-gradient-to-r" />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 lg:rounded-3xl"
-              style={{ boxShadow: "inset 0 0 40px hsl(var(--background) / 0.5)" }}
-            />
+
+            <Suspense fallback={null}>
+              <AgentGraph />
+            </Suspense>
+
+            {/* Caption: names what the viewer is looking at */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-5 lg:p-7">
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary/80">
+                live system
+              </p>
+              <p className="mt-1.5 max-w-xs text-sm text-muted-foreground">
+                An orchestrator calling tools — the pattern behind CliniBot and OMR.AI.
+              </p>
+            </div>
+
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/50 lg:bg-gradient-to-r" />
             <div className="pointer-events-none absolute inset-0 z-20 lg:rounded-3xl gradient-border opacity-60" />
           </div>
         </div>
-        
+
         {/* Text Content */}
         <div className="relative z-10 w-full lg:w-1/2 px-6 lg:px-12 xl:px-20 flex flex-col justify-center lg:text-left text-center py-12 lg:py-28">
             <motion.div
@@ -257,7 +140,7 @@ export default function Index() {
                 Available for opportunities
               </span>
               <span aria-hidden className="h-3 w-px bg-border-strong" />
-              <span className="text-primary">CS Student @ FAST NUCES</span>
+              <span className="text-primary">{profile.status}</span>
             </motion.div>
 
             <motion.h1
@@ -271,8 +154,8 @@ export default function Index() {
                 className="pointer-events-none absolute -inset-x-6 -inset-y-8 -z-10 rounded-full opacity-40 blur-3xl"
                 style={{ background: "radial-gradient(50% 60% at 40% 50%, hsl(var(--primary) / 0.25), transparent 70%)" }}
               />
-              <span className="text-foreground">Umer </span>
-              <span className="text-gradient-aurora">Khan</span>
+              <span className="text-foreground">{profile.firstName} </span>
+              <span className="text-gradient-aurora">{profile.lastName}</span>
             </motion.h1>
 
             {/* Rotating role text */}
@@ -291,8 +174,7 @@ export default function Index() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="text-lg text-muted-foreground max-w-xl mb-10 leading-relaxed lg:mx-0 mx-auto text-balance"
             >
-              Engineering production-ready web applications with scalable architectures, 
-              optimized databases, and intelligent automation.
+              {profile.summary}
             </motion.p>
 
             <motion.div
@@ -375,6 +257,82 @@ export default function Index() {
         <Marquee items={allTech} />
       </section>
 
+      {/* Experience — currently the strongest signal on the page */}
+      <section id="experience" className="relative z-10 px-6 py-24">
+        <div className="mx-auto max-w-4xl">
+          <SectionHeader
+            chapter="01"
+            eyebrow="where i am now"
+            title="Currently"
+            accent="Building"
+            description="Shipping a commercial product while interning in applied AI"
+          />
+
+          <div className="stage-3d space-y-5">
+            {experience.map((job) => (
+              <motion.div
+                key={job.company}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.5 }}
+              >
+                <SpotlightCard className="p-6 md:p-8">
+                  <div className="depth-1 flex flex-wrap items-start justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                        <Briefcase className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-display text-lg font-semibold">{job.role}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {job.company}
+                          <span className="text-muted-foreground/60"> · {job.parent}</span>
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      {job.current && (
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-[11px] text-primary">
+                          <span className="relative flex h-1.5 w-1.5">
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-70" />
+                            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+                          </span>
+                          Current
+                        </span>
+                      )}
+                      <p className="mt-1.5 font-mono text-xs text-muted-foreground">{job.period}</p>
+                      <p className="font-mono text-[11px] text-muted-foreground/70">{job.mode}</p>
+                    </div>
+                  </div>
+
+                  <ul className="depth-1 mt-5 space-y-2.5">
+                    {job.points.map((point) => (
+                      <li key={point} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="depth-1 mt-5 flex flex-wrap gap-2">
+                    {job.stack.map((tech) => (
+                      <Badge
+                        key={tech}
+                        variant="outline"
+                        className="border-border-strong font-mono text-[11px] font-normal"
+                      >
+                        {tech}
+                      </Badge>
+                    ))}
+                  </div>
+                </SpotlightCard>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* About Section */}
       <section id="about" ref={aboutRef} className="py-24 px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
@@ -385,10 +343,11 @@ export default function Index() {
           >
             <motion.div variants={fadeUp}>
               <SectionHeader
-                eyebrow="// about me"
+                chapter="02"
+                eyebrow="how i got here"
                 title="Who I"
                 accent="Am"
-                description="A driven computer science student building production-ready software"
+                description={profile.longSummary}
               />
             </motion.div>
 
@@ -406,13 +365,14 @@ export default function Index() {
                   <CardContent>
                     <div className="space-y-4">
                       <div>
-                        <h4 className="font-semibold text-foreground">BS Computer Science</h4>
-                        <p className="text-sm text-muted-foreground">FAST NUCES, Karachi — 6 semesters completed</p>
-                        <p className="text-xs text-primary mt-1">2023 – 2027</p>
+                        <h4 className="font-semibold text-foreground">{education[0].degree}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {education[0].school} — {education[0].detail}
+                        </p>
+                        <p className="text-xs text-primary mt-1">{education[0].year}</p>
                       </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        Coursework in Data Structures, Algorithms, DBMS, OOP, and Operating Systems 
-                        — with hands-on experience building production-ready applications.
+                      <p className="font-mono text-xs leading-relaxed text-muted-foreground">
+                        {education[0].coursework.join(" · ")}
                       </p>
                     </div>
                   </CardContent>
@@ -473,7 +433,8 @@ export default function Index() {
           >
             <motion.div variants={fadeUp}>
               <SectionHeader
-                eyebrow="// tech stack"
+                chapter="03"
+                eyebrow="what i build with"
                 title="Skills &"
                 accent="Technologies"
                 description="The tools and technologies I leverage to build robust applications"
@@ -484,15 +445,18 @@ export default function Index() {
               {skills.map((group) => (
                 <motion.div key={group.category} variants={fadeUp} className={group.span}>
                   <SpotlightCard className="group relative h-full overflow-hidden p-6">
-                    <group.icon
-                      aria-hidden
-                      className="bento-glyph h-28 w-28 text-primary"
-                      strokeWidth={1}
-                    />
-                    <div className="relative flex items-center gap-2">
-                      <group.icon className="h-4 w-4 text-primary" />
-                      <h3 className="font-display text-base font-semibold">{group.category}</h3>
-                    </div>
+                    {(() => {
+                      const Icon = categoryIcon[group.category] ?? Code2;
+                      return (
+                        <>
+                          <Icon aria-hidden className="bento-glyph h-28 w-28 text-primary" strokeWidth={1} />
+                          <div className="relative flex items-center gap-2 depth-1">
+                            <Icon className="h-4 w-4 text-primary" />
+                            <h3 className="font-display text-base font-semibold">{group.category}</h3>
+                          </div>
+                        </>
+                      );
+                    })()}
                     <div className="relative mt-4 flex flex-wrap gap-2">
                       {group.items.map((skill) => (
                         <Badge
@@ -522,7 +486,8 @@ export default function Index() {
           >
             <motion.div variants={fadeUp}>
               <SectionHeader
-                eyebrow="// featured work"
+                chapter="04"
+                eyebrow="what i have shipped"
                 title="Featured"
                 accent="Projects"
                 description="A selection of projects demonstrating full-stack expertise and system design"
@@ -554,7 +519,7 @@ export default function Index() {
 
                       <div className="grid gap-6 p-6 md:grid-cols-[1fr_auto] md:items-start">
                         <div>
-                          <p className="font-mono text-xs text-primary/80">{project.highlights}</p>
+                          <p className="font-mono text-xs text-primary/80">{project.subtitle}</p>
                           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                             {project.description}
                           </p>
@@ -627,7 +592,8 @@ export default function Index() {
           >
             <motion.div variants={fadeUp}>
               <SectionHeader
-                eyebrow="// get in touch"
+                chapter="05"
+                eyebrow="what is next"
                 title="Let's"
                 accent="Connect"
                 description="Open to internship opportunities, freelance projects, and collaboration"
