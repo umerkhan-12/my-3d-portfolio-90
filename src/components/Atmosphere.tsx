@@ -5,23 +5,23 @@ const NOISE_SVG =
 
 type BlobProps = {
   className: string;
-  color: string;
-  drift: { x: number[]; y: number[] };
+  colorVar: string;
+  x: number[];
+  y: number[];
   duration: number;
 };
 
-function Blob({ className, color, drift, duration }: BlobProps) {
+function Blob({ className, colorVar, x, y, duration }: BlobProps) {
   const reduced = useReducedMotion();
   return (
     <motion.div
-      aria-hidden
       className={`absolute rounded-full ${className}`}
       style={{
-        background: `radial-gradient(circle at 50% 50%, hsl(var(${color}) / 0.9), transparent 70%)`,
-        filter: "blur(90px)",
+        background: `radial-gradient(circle at 50% 50%, hsl(var(${colorVar}) / 0.85), transparent 70%)`,
+        filter: "blur(100px)",
         willChange: "transform",
       }}
-      animate={reduced ? undefined : { x: drift.x, y: drift.y }}
+      animate={reduced ? undefined : { x, y }}
       transition={
         reduced
           ? undefined
@@ -33,21 +33,60 @@ function Blob({ className, color, drift, duration }: BlobProps) {
 
 export default function Atmosphere() {
   return (
-    <div
-      aria-hidden
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
-studio-atmosphere=""
-    >
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       {/* Aurora blobs */}
       <div className="absolute inset-0 opacity-[0.16]">
         <Blob
-          className="-top-40 -left-32 h-[42rem] w-[42rem]"
-          color="--primary"
-          drift={{ x: [0, 80, 0], y: [0, 50, 0] }}
-          duration: {...({} as never)}
+          className="-top-48 -left-40 h-[40rem] w-[40rem]"
+          colorVar="--primary"
+          x={[0, 90, 0]}
+          y={[0, 60, 0]}
           duration={26}
         />
+        <Blob
+          className="top-1/3 -right-52 h-[38rem] w-[38rem]"
+          colorVar="--accent"
+          x={[0, -70, 0]}
+          y={[0, -50, 0]}
+          duration={30}
+        />
+        <Blob
+          className="bottom-[-16rem] left-1/4 h-[34rem] w-[34rem]"
+          colorVar="--violet"
+          x={[0, 60, 0]}
+          y={[0, -40, 0]}
+          duration={24}
+        />
       </div>
+
+      {/* Dot matrix fading toward the top */}
+      <div
+        className="absolute inset-0 opacity-[0.35]"
+        style={{
+          backgroundImage:
+            "radial-gradient(hsl(var(--border-strong) / 0.9) 1px, transparent 1px)",
+          backgroundSize: "38px 38px",
+          maskImage:
+            "linear-gradient(to top, hsl(0 0% 0% / 0.9), transparent 65%)",
+          WebkitMaskImage:
+            "linear-gradient(to top, hsl(0 0% 0% / 0.9), transparent 65%)",
+        }}
+      />
+
+      {/* Vignette */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 40%, transparent 35%, hsl(var(--background) / 0.75) 100%)",
+        }}
+      />
+
+      {/* Film grain */}
+      <div
+        className="absolute inset-0 opacity-[0.045] mix-blend-overlay"
+        style={{ backgroundImage: NOISE_SVG, backgroundSize: "160px 160px" }}
+      />
     </div>
   );
 }
