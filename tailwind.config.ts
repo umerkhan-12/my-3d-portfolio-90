@@ -14,13 +14,36 @@ export default {
     },
     extend: {
       fontFamily: {
+        display: ["Space Grotesk", "Inter", "sans-serif"],
         heading: ["Inter", "sans-serif"],
         mono: ["Fira Code", "monospace"],
       },
+      backgroundImage: {
+        "gradient-brand": "var(--gradient-brand)",
+        "gradient-aurora": "var(--gradient-aurora)",
+        "gradient-surface": "var(--gradient-surface)",
+      },
+      boxShadow: {
+        sm: "var(--shadow-sm)",
+        md: "var(--shadow-md)",
+        lg: "var(--shadow-lg)",
+        glow: "var(--shadow-glow)",
+      },
+
       colors: {
         border: "hsl(var(--border))",
+        "border-subtle": "hsl(var(--border-subtle))",
+        "border-strong": "hsl(var(--border-strong))",
+        "surface-1": "hsl(var(--surface-1))",
+        "surface-2": "hsl(var(--surface-2))",
+        "surface-3": "hsl(var(--surface-3))",
+        violet: {
+          DEFAULT: "hsl(var(--violet))",
+          foreground: "hsl(var(--violet-foreground))",
+        },
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
