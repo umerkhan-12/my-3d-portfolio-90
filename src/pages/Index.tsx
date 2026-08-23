@@ -7,6 +7,7 @@ import {
 import { Link } from "react-router-dom";
 import { useRef, useState, useEffect, Suspense, lazy } from "react";
 const AgentGraph = lazy(() => import("@/components/AgentGraph"));
+const SystemArchitecture = lazy(() => import("@/components/SystemArchitecture"));
 
 import MagneticButton from "@/components/MagneticButton";
 import ScrambleText from "@/components/ScrambleText";
@@ -257,11 +258,44 @@ export default function Index() {
         <Marquee items={allTech} />
       </section>
 
+      {/* System architecture — the skills section, drawn instead of listed */}
+      <section id="architecture" className="relative z-10 px-6 py-24">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeader
+            chapter="01"
+            eyebrow="how it fits together"
+            title="System"
+            accent="Architecture"
+            description="Requests flow down the stack and responses come back up. Every box is something I ship with."
+          />
+
+          <div className="relative">
+            <div className="relative h-[520px] w-full overflow-hidden rounded-3xl border border-border-subtle bg-gradient-surface md:h-[620px]">
+              <div
+                aria-hidden
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "radial-gradient(90% 70% at 50% 30%, hsl(var(--primary) / 0.10), transparent 65%)",
+                }}
+              />
+              <Suspense fallback={null}>
+                <SystemArchitecture />
+              </Suspense>
+
+              <p className="pointer-events-none absolute bottom-4 right-5 font-mono text-[11px] text-muted-foreground/60">
+                drag your cursor to rotate
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Experience — currently the strongest signal on the page */}
       <section id="experience" className="relative z-10 px-6 py-24">
         <div className="mx-auto max-w-4xl">
           <SectionHeader
-            chapter="01"
+            chapter="02"
             eyebrow="where i am now"
             title="Currently"
             accent="Building"
@@ -343,7 +377,7 @@ export default function Index() {
           >
             <motion.div variants={fadeUp}>
               <SectionHeader
-                chapter="02"
+                chapter="03"
                 eyebrow="how i got here"
                 title="Who I"
                 accent="Am"
@@ -433,7 +467,7 @@ export default function Index() {
           >
             <motion.div variants={fadeUp}>
               <SectionHeader
-                chapter="03"
+                chapter="04"
                 eyebrow="what i build with"
                 title="Skills &"
                 accent="Technologies"
@@ -486,7 +520,7 @@ export default function Index() {
           >
             <motion.div variants={fadeUp}>
               <SectionHeader
-                chapter="04"
+                chapter="05"
                 eyebrow="what i have shipped"
                 title="Featured"
                 accent="Projects"
@@ -592,7 +626,7 @@ export default function Index() {
           >
             <motion.div variants={fadeUp}>
               <SectionHeader
-                chapter="05"
+                chapter="06"
                 eyebrow="what is next"
                 title="Let's"
                 accent="Connect"
