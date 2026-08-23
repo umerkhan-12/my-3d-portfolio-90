@@ -3,6 +3,11 @@ import { ArrowRight, Github, Linkedin, Mail, Code2, Briefcase, GraduationCap, Aw
 import { Link } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import Scene3DSimple from "@/components/Scene3DSimple";
+import Atmosphere from "@/components/Atmosphere";
+import MagneticButton from "@/components/MagneticButton";
+import ScrambleText from "@/components/ScrambleText";
+import ScrollCue from "@/components/ScrollCue";
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -117,7 +122,10 @@ export default function Index() {
         description="Umer Khan — Full-Stack Developer specializing in React, Next.js, Node.js, and AI/ML. Building production-ready applications with modern technologies."
         keywords="Umer Khan, Portfolio, Full-Stack Developer, React, Next.js, Python"
       />
-      
+
+      {/* Ambient atmosphere */}
+      <Atmosphere />
+
       {/* Global 3D Background */}
       <Scene3DSimple />
       
@@ -125,29 +133,47 @@ export default function Index() {
 
       {/* Hero Section */}
       <section id="home" className="relative min-h-screen flex flex-col lg:flex-row items-stretch overflow-hidden">
-        {/* Video Background - Top on mobile, Left on desktop */}
-        <div className="relative w-full lg:w-1/2 h-[40vh] lg:h-auto lg:min-h-screen">
-          <div className="absolute inset-0 overflow-hidden bg-background">
+        {/* Video - Top on mobile, Left on desktop */}
+        <div className="relative w-full lg:w-1/2 h-[40vh] lg:h-auto lg:min-h-screen lg:p-6 lg:pt-28">
+          <div className="relative h-full w-full overflow-hidden bg-gradient-surface lg:rounded-3xl lg:shadow-lg">
+            <div className="pointer-events-none absolute inset-0 z-20 lg:rounded-3xl gradient-border opacity-60" />
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover opacity-90"
+              className="absolute inset-0 h-full w-full object-cover opacity-90"
               onError={(e) => console.error('Video failed to load:', e)}
             >
               <source src="/videos/video1.mp4" type="video/mp4" />
             </video>
-            <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-transparent via-transparent to-background/60" />
+            <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-transparent via-transparent to-background/70" />
+            <div
+              className="absolute inset-0"
+              style={{ boxShadow: "inset 0 0 90px hsl(var(--background) / 0.9)" }}
+            />
           </div>
         </div>
         
-        {/* Text Content - Below on mobile, Right on desktop */}
-        <div className="relative z-10 w-full lg:w-1/2 px-6 lg:px-12 xl:px-24 flex flex-col justify-center lg:text-left text-center py-12 lg:py-20">
+        {/* Text Content */}
+        <div className="relative z-10 w-full lg:w-1/2 px-6 lg:px-12 xl:px-20 flex flex-col justify-center lg:text-left text-center py-12 lg:py-28">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
+              className="mb-5 inline-flex items-center gap-2 self-center rounded-full border border-border-subtle bg-surface-2/70 px-4 py-1.5 text-xs font-mono text-muted-foreground backdrop-blur lg:self-start"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+              </span>
+              Available for opportunities
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.05 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-mono mb-8 mx-auto lg:mx-0"
             >
               <Sparkles className="w-4 h-4" />
@@ -158,10 +184,15 @@ export default function Index() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] mb-4"
+              className="display-xl text-balance mb-4 relative"
             >
+              <span
+                aria-hidden
+                className="pointer-events-none absolute -inset-x-6 -inset-y-8 -z-10 rounded-full opacity-40 blur-3xl"
+                style={{ background: "radial-gradient(50% 60% at 40% 50%, hsl(var(--primary) / 0.25), transparent 70%)" }}
+              />
               <span className="text-foreground">Umer </span>
-              <span className="text-gradient">Khan</span>
+              <span className="text-gradient-aurora">Khan</span>
             </motion.h1>
 
             {/* Rotating role text */}
@@ -169,27 +200,16 @@ export default function Index() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-2xl md:text-3xl font-bold mb-6 h-12 flex items-center lg:justify-start justify-center"
+              className="mb-6 flex h-12 items-center justify-center font-mono text-xl font-semibold text-primary md:text-2xl lg:justify-start"
             >
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={currentRole}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.5 }}
-                  className="text-primary inline-block"
-                >
-                  {roles[currentRole]}
-                </motion.span>
-              </AnimatePresence>
+              <ScrambleText key={currentRole} text={roles[currentRole]} />
             </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="text-lg text-muted-foreground max-w-xl mb-10 leading-relaxed lg:mx-0 mx-auto"
+              className="text-lg text-muted-foreground max-w-xl mb-10 leading-relaxed lg:mx-0 mx-auto text-balance"
             >
               Engineering production-ready web applications with scalable architectures, 
               optimized databases, and intelligent automation.
@@ -199,18 +219,20 @@ export default function Index() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex flex-col sm:flex-row gap-4 lg:justify-start justify-center items-center mb-12"
+              className="mb-10 flex flex-col items-center gap-4 sm:flex-row lg:justify-start justify-center"
             >
-              <Link
-                to="/projects"
-                className="flex items-center gap-2 px-8 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity glow-primary"
-              >
-                View Projects
-                <ArrowRight size={16} />
-              </Link>
+              <MagneticButton>
+                <Link
+                  to="/projects"
+                  className="sheen flex items-center gap-2 rounded-lg bg-gradient-brand px-8 py-3 font-semibold text-primary-foreground shadow-glow"
+                >
+                  View Projects
+                  <ArrowRight size={16} />
+                </Link>
+              </MagneticButton>
               <Link
                 to="/contact"
-                className="px-8 py-3 rounded-lg border border-border text-foreground font-medium hover:border-primary/40 transition-colors"
+                className="gradient-border rounded-lg border border-border-strong px-8 py-3 font-medium text-foreground transition-colors hover:text-primary"
               >
                 Get in Touch
               </Link>
@@ -232,30 +254,35 @@ export default function Index() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-11 h-11 rounded-full border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all hover:scale-110"
+                  className="w-11 h-11 rounded-full border border-border-subtle bg-surface-2/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all hover:scale-110"
                 >
                   <Icon size={20} />
                 </a>
               ))}
             </motion.div>
+
+            {/* Stat strip — anchors the lower half of the column */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+              className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border-subtle bg-border-subtle/60 sm:grid-cols-4"
+            >
+              {stats.map((stat) => (
+                <div key={stat.label} className="bg-surface-1/80 px-4 py-4 backdrop-blur">
+                  <div className="font-display text-xl font-bold text-foreground">{stat.value}</div>
+                  <div className="mt-1 font-mono text-[11px] uppercase tracking-wide text-muted-foreground">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </motion.div>
           </div>
 
         {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
-        >
-          <div className="w-6 h-10 rounded-full border-2 border-primary/30 flex items-start justify-center p-2">
-            <motion.div
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="w-1.5 h-1.5 rounded-full bg-primary"
-            />
-          </div>
-        </motion.div>
+        <ScrollCue />
       </section>
+
 
       {/* Stats Section */}
       <section className="py-20 relative z-10">
