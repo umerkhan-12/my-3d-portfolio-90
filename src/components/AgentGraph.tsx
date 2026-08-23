@@ -27,6 +27,9 @@ const TOOLS: Tool[] = [
   { label: "NestJS", angle: 5.4, radius: 3.05, y: 1.0, color: PRIMARY },
 ];
 
+/** Widest orbit in the graph — what the camera has to frame. */
+const GRAPH_RADIUS = Math.max(...TOOLS.map((t) => Math.hypot(t.radius, t.y))) + 0.3;
+
 function toVec(t: Tool) {
   return new THREE.Vector3(Math.cos(t.angle) * t.radius, t.y, Math.sin(t.angle) * t.radius);
 }
@@ -131,6 +134,23 @@ function Pulse({ tool, index }: { tool: Tool; index: number }) {
   );
 }
 
+/** Pulls the camera back so the full orbit fits, whatever the aspect ratio. */
+function FitCamera({ radius }: { radius: number }) {
+  const { camera, size } = useThree();
+
+  useEffect(() => {
+    const cam = camera as THREE.PerspectiveCamera;
+    const aspect = size.width / Math.max(size.height, 1);
+    const vFov = (cam.fov * Math.PI) / 180;
+    const distForHeight = radius / Math.tan(vFov / 2);
+    const distForWidth = radius / (Math.tan(vFov / 2) * aspect);
+    cam.position.set(0, 0.6, Math.max(distForHeight, distForWidth) * 1.12);
+    cam.updateProjectionMatrix();
+  }, [camera, size, radius]);
+
+  return null;
+}
+
 /** Slow orbit plus damped pointer parallax. */
 function Rig({ interactive }: { interactive: boolean }) {
   const group = useRef<THREE.Group>(null);
@@ -195,6 +215,7 @@ export default function AgentGraph() {
       style={{ background: "transparent" }}
     >
       <ambientLight intensity={0.4} />
+      <FitCamera radius={GRAPH_RADIUS} />
       <Rig interactive={!isMobile} />
     </Canvas>
   );
