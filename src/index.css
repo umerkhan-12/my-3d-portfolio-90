@@ -244,6 +244,125 @@
     -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
     mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
   }
+
+  /* --- Shared card surface: spotlight + pointer-lit border + tilt --- */
+  .spotlight-card {
+    --spot-x: 50%;
+    --spot-y: 50%;
+    --spot-opacity: 0;
+    --tilt-x: 0deg;
+    --tilt-y: 0deg;
+    position: relative;
+    isolation: isolate;
+    border-radius: 1rem;
+    border: 1px solid hsl(var(--border-subtle));
+    background: var(--gradient-surface);
+    transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.3s ease, box-shadow 0.4s ease;
+  }
+  .spotlight-card:hover {
+    border-color: hsl(var(--primary) / 0.35);
+    box-shadow: var(--shadow-md);
+  }
+  /* Spotlight wash */
+  .spotlight-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: var(--spot-opacity);
+    transition: opacity 0.35s ease;
+    background: radial-gradient(
+      420px circle at var(--spot-x) var(--spot-y),
+      hsl(var(--primary) / 0.12),
+      transparent 65%
+    );
+    pointer-events: none;
+  }
+  /* Border lit toward the pointer */
+  .spotlight-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    opacity: var(--spot-opacity);
+    transition: opacity 0.35s ease;
+    background: radial-gradient(
+      280px circle at var(--spot-x) var(--spot-y),
+      hsl(var(--primary) / 0.55),
+      transparent 70%
+    );
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* --- Schema spine: connector dot for project nodes --- */
+  .node-dot {
+    position: relative;
+  }
+  .node-dot::before {
+    content: "";
+    position: absolute;
+    top: 2.25rem;
+    left: -1.85rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: hsl(var(--primary));
+    box-shadow: 0 0 0 4px hsl(var(--primary) / 0.15);
+  }
+  .node-dot::after {
+    content: "";
+    position: absolute;
+    top: 2.5rem;
+    left: -1.6rem;
+    width: 1.6rem;
+    height: 1px;
+    background: linear-gradient(to right, hsl(var(--primary) / 0.6), transparent);
+  }
+
+  /* --- Marquee --- */
+  .marquee-track {
+    animation: marquee 38s linear infinite;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* --- Bento cell glyph --- */
+  .bento-glyph {
+    position: absolute;
+    right: -0.5rem;
+    bottom: -1rem;
+    opacity: 0.05;
+    pointer-events: none;
+  }
+}
+
+/* Motion opt-out: kill everything ambient, keep the layout identical. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  .marquee-track { animation: none; }
+  .text-gradient-aurora { animation: none; }
+  .animate-gradient { animation: none; }
+  .gradient-border:hover::before { animation: none; }
+
+  .spotlight-card {
+    transform: none !important;
+    transition: border-color 0.3s ease;
+  }
+  .spotlight-card::before,
+  .spotlight-card::after {
+    display: none;
+  }
 }
 
 /* Scrollbar */
@@ -253,6 +372,14 @@
 ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.4); }
 
 html { scroll-behavior: smooth; }
+
+/* Keyboard focus must always be visible, including on the dark surfaces. */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+:focus:not(:focus-visible) { outline: none; }
 
 /* Selection */
 ::selection {

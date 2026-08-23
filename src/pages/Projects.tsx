@@ -3,7 +3,6 @@ import { useRef, useState } from "react";
 import { ExternalLink, Github, ArrowRight, Play } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Scene3DSimple from "@/components/Scene3DSimple";
 import SEO from "@/components/SEO";
 
 interface Project {
@@ -236,13 +235,12 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
 export default function Projects() {
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <div id="main" className="relative min-h-screen overflow-hidden">
       <SEO 
         title="Projects" 
         description="Explore my portfolio of production-ready web applications including NADRA Citizen Services Portal, Voice Assistant AI, PassMag Password Manager, and more."
         keywords="Projects, Portfolio, Web Development, React, Next.js, Full-Stack, Python"
       />
-      <Scene3DSimple />
       <Navbar />
 
       <div className="pt-24 pb-16 max-w-6xl mx-auto px-6 md:px-12 relative z-10">

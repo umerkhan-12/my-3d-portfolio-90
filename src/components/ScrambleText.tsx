@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 
-const CHARS = "!<>-_\\/[]{}—=+*^?#________";
+const CHARS = "!<>-_[]{}=+*^?#$%&/";
+const DURATION = 600;
 
+/**
+ * Resolves `text` left-to-right out of noise over DURATION ms, so the word
+ * visibly locks into place instead of sitting in unreadable glyphs.
+ */
 export default function ScrambleText({
   text,
   className,
@@ -12,7 +17,6 @@ export default function ScrambleText({
 }) {
   const [output, setOutput] = useState(text);
   const reduced = useReducedMotion();
-  const frame = useRef(0);
   const raf = useRef<number>();
 
   useEffect(() => {
@@ -20,30 +24,28 @@ export default function ScrambleText({
       setOutput(text);
       return;
     }
-    frame.current = 0;
-    const queue = text.split("").map((c, i) => ({
-      char: c,
-      start: i * 2,
-      end: i * 2 + 12 + Math.floor(Math.random() * 12),
-    }));
 
-    const tick = () => {
-      let done = 0;
-      let out = "";
-      for (const q of queue) {
-        if (frame.current >= q.end) {
-          done++;
-          out += q.char;
-        } else if (frame.current >= q.start) {
-          out += CHARS[Math.floor(Math.random() * CHARS.length)];
-        } else {
-          out += " ";
-        }
-      }
-      setOutput(out);
-      frame.current++;
-      if (done < queue.length) raf.current = requestAnimationFrame(tick);
+    const chars = text.split("");
+    const start = performance.now();
+
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / DURATION, 1);
+      // Ease-out so the tail of the word settles quickly.
+      const settled = Math.floor(chars.length * (1 - Math.pow(1 - progress, 2)));
+
+      setOutput(
+        chars
+          .map((char, i) => {
+            if (i < settled || char === " ") return char;
+            return CHARS[Math.floor(Math.random() * CHARS.length)];
+          })
+          .join("")
+      );
+
+      if (progress < 1) raf.current = requestAnimationFrame(tick);
+      else setOutput(text);
     };
+
     raf.current = requestAnimationFrame(tick);
     return () => {
       if (raf.current) cancelAnimationFrame(raf.current);
@@ -52,7 +54,7 @@ export default function ScrambleText({
 
   return (
     <span className={className} aria-label={text}>
-      {output}
+      <span aria-hidden>{output}</span>
     </span>
   );
 }

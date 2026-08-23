@@ -18,4 +18,18 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Split the heavy, rarely-changing dependencies so the app chunk stays
+        // small and three.js can be fetched after first paint.
+        manualChunks: {
+          react: ["react", "react-dom", "react-router-dom"],
+          three: ["three", "@react-three/fiber"],
+          motion: ["framer-motion"],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 700,
+  },
 }));

@@ -3,7 +3,6 @@ import { useRef } from "react";
 import { GraduationCap, Code2, Shield, Wrench, Brain, Trophy } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Scene3DSimple from "@/components/Scene3DSimple";
 import SEO from "@/components/SEO";
 
 const fadeUp = {
@@ -92,13 +91,12 @@ function AnimatedSection({ children, className = "" }: { children: React.ReactNo
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <div id="main" className="relative min-h-screen overflow-hidden">
       <SEO 
         title="About Me" 
         description="Computer Science student at FAST NUCES with hands-on experience building production-ready full-stack applications. Expertise in React, Next.js, Node.js, and AI/ML."
         keywords="About Umer Khan, Skills, Education, Experience, Computer Science"
       />
-      <Scene3DSimple />
       <Navbar />
 
       <div className="pt-24 pb-16 max-w-6xl mx-auto px-6 md:px-12 relative z-10">

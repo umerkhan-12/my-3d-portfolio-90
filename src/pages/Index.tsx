@@ -1,9 +1,11 @@
 import { motion, useInView, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { ArrowRight, Github, Linkedin, Mail, Code2, Briefcase, GraduationCap, Award, ExternalLink, Send, MapPin, Phone, Sparkles, Rocket, Target, Users } from "lucide-react";
+import {
+  ArrowRight, Github, Linkedin, Mail, Code2, GraduationCap, Award, ExternalLink,
+  Send, MapPin, Phone, Sparkles, Rocket, Target, Users, Server, Database,
+  Terminal, ShieldCheck, Wrench, type LucideIcon,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
-import Scene3DSimple from "@/components/Scene3DSimple";
-import Atmosphere from "@/components/Atmosphere";
 import MagneticButton from "@/components/MagneticButton";
 import ScrambleText from "@/components/ScrambleText";
 import ScrollCue from "@/components/ScrollCue";
@@ -12,6 +14,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import SEO from "@/components/SEO";
+import SectionHeader from "@/components/SectionHeader";
+import SpotlightCard from "@/components/SpotlightCard";
+import QueryPlan from "@/components/QueryPlan";
+import Marquee from "@/components/Marquee";
+import CountUp from "@/components/CountUp";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -31,21 +38,74 @@ const staggerContainer = {
   },
 };
 
-const skills = {
-  "Languages": ["JavaScript", "TypeScript", "Python", "C/C++", "SQL"],
-  "Frontend": ["React 19", "Next.js 16", "Tailwind CSS", "Framer Motion", "Three.js"],
-  "Backend": ["Node.js", "Express.js", "Flask", "REST APIs", "JWT"],
-  "Database": ["MySQL 8", "MongoDB", "Prisma ORM"],
-  "Security": ["NextAuth.js", "bcrypt", "OTP", "RBAC", "Rate Limiting"],
-  "AI & Automation": ["LLM", "Gen AI", "Automation", "Agentic Workflow", "n8n", "Claude API"],
-  "Tools": ["Git", "Docker", "Vite", "Postman", "VS Code"],
-};
+/**
+ * Bento cells. `span` drives the grid weighting, so the section reads as
+ * composed rather than as a uniform loop.
+ */
+const skills = [
+  {
+    category: "AI & Automation",
+    icon: Sparkles,
+    span: "md:col-span-2 lg:col-span-2 lg:row-span-2",
+    items: ["LLM", "Gen AI", "Automation", "Agentic Workflow", "n8n", "Claude API"],
+  },
+  {
+    category: "Backend",
+    icon: Server,
+    span: "md:col-span-2 lg:col-span-2",
+    items: ["Node.js", "Express.js", "Flask", "REST APIs", "JWT"],
+  },
+  {
+    category: "Frontend",
+    icon: Code2,
+    span: "md:col-span-2 lg:col-span-2",
+    items: ["React 19", "Next.js 16", "Tailwind CSS", "Framer Motion", "Three.js"],
+  },
+  {
+    category: "Database",
+    icon: Database,
+    span: "md:col-span-1 lg:col-span-2",
+    items: ["MySQL 8", "MongoDB", "Prisma ORM"],
+  },
+  {
+    category: "Languages",
+    icon: Terminal,
+    span: "md:col-span-1 lg:col-span-1",
+    items: ["JavaScript", "TypeScript", "Python", "C/C++", "SQL"],
+  },
+  {
+    category: "Security",
+    icon: ShieldCheck,
+    span: "md:col-span-1 lg:col-span-1",
+    items: ["NextAuth.js", "bcrypt", "OTP", "RBAC", "Rate Limiting"],
+  },
+  {
+    category: "Tools",
+    icon: Wrench,
+    span: "md:col-span-1 lg:col-span-2",
+    items: ["Git", "Docker", "Vite", "Postman", "VS Code"],
+  },
+];
+
+const roles = [
+  "Full-Stack Developer",
+  "Database Architect",
+  "AI/ML Enthusiast",
+  "Problem Solver",
+];
+
+/** Flat list for the ticker — no technology that is not already listed above. */
+const allTech = Array.from(new Set(skills.flatMap((group) => group.items)));
 
 const projects = [
   {
     title: "OMR.AI — Agentic AI Personal Assistant",
     description: "A fully agentic AI personal assistant built on n8n with a custom Python/Streamlit frontend. Connects Gmail, Google Calendar, Google Docs, and job search APIs through intelligent multi-step workflows.",
     tags: ["n8n", "Claude API", "Python", "Streamlit", "OpenRouter"],
+    plan: [
+      { label: "services chained", value: "4" },
+      { label: "orchestration", value: "n8n" },
+    ],
     github: "https://github.com/umerkhan-12",
     demo: "https://www.linkedin.com/posts/umer-khan10_ai-automation-n8n-ugcPost-7477780554365616128-55rC/",
     highlights: "Agentic AI • n8n workflows • Claude API • Streamlit UI"
@@ -54,6 +114,11 @@ const projects = [
     title: "NADRA Citizen Services Portal",
     description: "Enterprise-grade government platform that reduced processing time by 60% with intelligent ticket management, multi-role auth, and bilingual AI chatbot.",
     tags: ["Next.js", "Prisma", "MySQL", "Flask", "AI"],
+    plan: [
+      { label: "processing time", value: "-60%" },
+      { label: "normalized tables", value: "12" },
+      { label: "chatbot languages", value: "2" },
+    ],
     github: "https://github.com/umerkhan-12",
     demo: "https://www.linkedin.com/posts/umer-khan10_fullstackdeveloper-javascript-typescript-ugcPost-7407316108757733376-9lDM/",
     highlights: "60% faster processing • 12-table DB • Bilingual AI chatbot"
@@ -62,6 +127,10 @@ const projects = [
     title: "Voice Assistant AI",
     description: "Hands-free voice-controlled assistant achieving 95% speech recognition accuracy. Supports 10+ commands with natural voice synthesis.",
     tags: ["Python", "SpeechRecognition", "Edge TTS"],
+    plan: [
+      { label: "recognition accuracy", value: "95%" },
+      { label: "supported commands", value: "10+" },
+    ],
     github: "https://github.com/umerkhan-12",
     highlights: "95% accuracy • 10+ commands • Natural voice synthesis"
   },
@@ -69,6 +138,10 @@ const projects = [
     title: "PassMag — Password Manager",
     description: "Secure local-first password management tool with full CRUD, real-time updates, search/filter, and copy-to-clipboard — zero external dependencies.",
     tags: ["React", "Express.js", "Tailwind CSS"],
+    plan: [
+      { label: "storage", value: "local-first" },
+      { label: "external deps", value: "0" },
+    ],
     github: "https://github.com/umerkhan-12",
     highlights: "Full CRUD • Local-first • Zero dependencies"
   },
@@ -76,14 +149,24 @@ const projects = [
     title: "Spotify Clone",
     description: "Pixel-perfect Spotify replica with custom audio controls, dynamic playlists, and 100% mobile responsive design — built without frameworks.",
     tags: ["HTML", "CSS", "JavaScript", "Audio API"],
+    plan: [
+      { label: "mobile responsive", value: "100%" },
+      { label: "frameworks used", value: "0" },
+    ],
     github: "https://github.com/umerkhan-12",
     highlights: "Pixel-perfect UI • Custom audio • 100% responsive"
   },
 ];
 
-const stats = [
-  { icon: Code2, label: "Projects Built", value: "15+" },
-  { icon: Award, label: "GitHub Contributions", value: "500+" },
+const stats: {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+  count?: number;
+  suffix?: string;
+}[] = [
+  { icon: Code2, label: "Projects Built", value: "15+", count: 15, suffix: "+" },
+  { icon: Award, label: "GitHub Contributions", value: "500+", count: 500, suffix: "+" },
   { icon: Users, label: "Open Source", value: "Active" },
   { icon: Rocket, label: "Learning", value: "Always" },
 ];
@@ -99,24 +182,17 @@ export default function Index() {
   const projectsInView = useInView(projectsRef, { once: true, margin: "-100px" });
   const contactInView = useInView(contactRef, { once: true, margin: "-100px" });
 
-  const roles = [
-    "Full-Stack Developer",
-    "Database Architect",
-    "AI/ML Enthusiast",
-    "Problem Solver"
-  ];
-  
   const [currentRole, setCurrentRole] = useState(0);
   
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentRole((prev) => (prev + 1) % roles.length);
-    }, 2500);
+    }, 3200);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden relative">
+    <div id="main" className="relative min-h-screen overflow-x-hidden">
       <SEO 
         title="Home" 
         description="Umer Khan — Full-Stack Developer specializing in React, Next.js, Node.js, and AI/ML. Building production-ready applications with modern technologies."
@@ -124,10 +200,8 @@ export default function Index() {
       />
 
       {/* Ambient atmosphere */}
-      <Atmosphere />
 
       {/* Global 3D Background */}
-      <Scene3DSimple />
       
       <Navbar />
 
@@ -136,22 +210,34 @@ export default function Index() {
         {/* Video - Top on mobile, Left on desktop */}
         <div className="relative w-full lg:w-1/2 h-[40vh] lg:h-auto lg:min-h-screen lg:p-6 lg:pt-28">
           <div className="relative h-full w-full overflow-hidden bg-gradient-surface lg:rounded-3xl lg:shadow-lg">
-            <div className="pointer-events-none absolute inset-0 z-20 lg:rounded-3xl gradient-border opacity-60" />
+            {/* Brand-gradient placeholder so the panel is never blank while the video decodes */}
+            <div
+              aria-hidden
+              className="absolute inset-0 opacity-40"
+              style={{
+                background:
+                  "radial-gradient(120% 90% at 30% 20%, hsl(var(--primary) / 0.18), transparent 60%), radial-gradient(100% 80% at 80% 90%, hsl(var(--accent) / 0.14), transparent 60%)",
+              }}
+            />
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="absolute inset-0 h-full w-full object-cover opacity-90"
+              preload="metadata"
+              className="absolute inset-0 h-full w-full object-cover"
               onError={(e) => console.error('Video failed to load:', e)}
             >
               <source src="/videos/video1.mp4" type="video/mp4" />
             </video>
-            <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-transparent via-transparent to-background/70" />
+            {/* Single directional mask, only where the video meets the text column */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/60 lg:bg-gradient-to-r" />
             <div
-              className="absolute inset-0"
-              style={{ boxShadow: "inset 0 0 90px hsl(var(--background) / 0.9)" }}
+              aria-hidden
+              className="pointer-events-none absolute inset-0 lg:rounded-3xl"
+              style={{ boxShadow: "inset 0 0 40px hsl(var(--background) / 0.5)" }}
             />
+            <div className="pointer-events-none absolute inset-0 z-20 lg:rounded-3xl gradient-border opacity-60" />
           </div>
         </div>
         
@@ -161,23 +247,17 @@ export default function Index() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="mb-5 inline-flex items-center gap-2 self-center rounded-full border border-border-subtle bg-surface-2/70 px-4 py-1.5 text-xs font-mono text-muted-foreground backdrop-blur lg:self-start"
+              className="mb-8 inline-flex items-center gap-3 self-center rounded-full border border-border-subtle bg-surface-2/70 px-4 py-1.5 font-mono text-xs text-muted-foreground backdrop-blur lg:self-start"
             >
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+              <span className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                </span>
+                Available for opportunities
               </span>
-              Available for opportunities
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.05 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-mono mb-8 mx-auto lg:mx-0"
-            >
-              <Sparkles className="w-4 h-4" />
-              CS Student @ FAST NUCES
+              <span aria-hidden className="h-3 w-px bg-border-strong" />
+              <span className="text-primary">CS Student @ FAST NUCES</span>
             </motion.div>
 
             <motion.h1
@@ -270,7 +350,13 @@ export default function Index() {
             >
               {stats.map((stat) => (
                 <div key={stat.label} className="bg-surface-1/80 px-4 py-4 backdrop-blur">
-                  <div className="font-display text-xl font-bold text-foreground">{stat.value}</div>
+                  <div className="font-display text-xl font-bold text-foreground">
+                    {stat.count !== undefined ? (
+                      <CountUp value={stat.count} suffix={stat.suffix} />
+                    ) : (
+                      stat.value
+                    )}
+                  </div>
                   <div className="mt-1 font-mono text-[11px] uppercase tracking-wide text-muted-foreground">
                     {stat.label}
                   </div>
@@ -284,33 +370,9 @@ export default function Index() {
       </section>
 
 
-      {/* Stats Section */}
-      <section className="py-20 relative z-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
-          >
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center group"
-              >
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-4 group-hover:bg-primary/20 transition-colors">
-                  <stat.icon className="w-8 h-8 text-primary" />
-                </div>
-                <div className="text-3xl font-bold text-foreground mb-1">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
+      {/* Tech ticker — the stats already live in the hero strip */}
+      <section aria-label="Technologies" className="relative z-10 border-y border-border-subtle/60 py-6">
+        <Marquee items={allTech} />
       </section>
 
       {/* About Section */}
@@ -321,21 +383,19 @@ export default function Index() {
             initial="hidden"
             animate={aboutInView ? "visible" : "hidden"}
           >
-            <motion.div variants={fadeUp} className="text-center mb-16">
-              <div className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary text-sm font-mono mb-4">
-                // about me
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                Who I <span className="text-gradient">Am</span>
-              </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                A driven computer science student building production-ready software
-              </p>
+            <motion.div variants={fadeUp}>
+              <SectionHeader
+                eyebrow="// about me"
+                title="Who I"
+                accent="Am"
+                description="A driven computer science student building production-ready software"
+              />
             </motion.div>
 
             <div className="grid md:grid-cols-2 gap-8">
               <motion.div variants={fadeUp}>
-                <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-primary/30 transition-all group">
+                <SpotlightCard className="h-full">
+                <Card className="h-full border-none bg-transparent shadow-none group">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                       <GraduationCap className="w-6 h-6 text-primary" />
@@ -357,10 +417,12 @@ export default function Index() {
                     </div>
                   </CardContent>
                 </Card>
+                </SpotlightCard>
               </motion.div>
 
               <motion.div variants={fadeUp}>
-                <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-primary/30 transition-all group">
+                <SpotlightCard className="h-full">
+                <Card className="h-full border-none bg-transparent shadow-none group">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                       <Target className="w-6 h-6 text-primary" />
@@ -385,6 +447,7 @@ export default function Index() {
                     </ul>
                   </CardContent>
                 </Card>
+                </SpotlightCard>
               </motion.div>
             </div>
 
@@ -408,46 +471,40 @@ export default function Index() {
             initial="hidden"
             animate={skillsInView ? "visible" : "hidden"}
           >
-            <motion.div variants={fadeUp} className="text-center mb-16">
-              <div className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary text-sm font-mono mb-4">
-                // tech stack
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                Skills & <span className="text-gradient">Technologies</span>
-              </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                The tools and technologies I leverage to build robust applications
-              </p>
+            <motion.div variants={fadeUp}>
+              <SectionHeader
+                eyebrow="// tech stack"
+                title="Skills &"
+                accent="Technologies"
+                description="The tools and technologies I leverage to build robust applications"
+              />
             </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Object.entries(skills).map(([category, items], index) => (
-                <motion.div
-                  key={category}
-                  variants={fadeUp}
-                  custom={index}
-                >
-                  <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-primary/30 transition-all group">
-                    <CardHeader>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <Code2 className="w-5 h-5 text-primary" />
-                        {category}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {items.map((skill) => (
-                          <Badge
-                            key={skill}
-                            variant="secondary"
-                            className="bg-primary/10 hover:bg-primary/20 transition-colors"
-                          >
-                            {skill}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+            <div className="grid auto-rows-[minmax(0,auto)] grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4">
+              {skills.map((group) => (
+                <motion.div key={group.category} variants={fadeUp} className={group.span}>
+                  <SpotlightCard className="group relative h-full overflow-hidden p-6">
+                    <group.icon
+                      aria-hidden
+                      className="bento-glyph h-28 w-28 text-primary"
+                      strokeWidth={1}
+                    />
+                    <div className="relative flex items-center gap-2">
+                      <group.icon className="h-4 w-4 text-primary" />
+                      <h3 className="font-display text-base font-semibold">{group.category}</h3>
+                    </div>
+                    <div className="relative mt-4 flex flex-wrap gap-2">
+                      {group.items.map((skill) => (
+                        <Badge
+                          key={skill}
+                          variant="secondary"
+                          className="border border-border-subtle bg-surface-2/60 font-mono text-[11px] font-normal text-muted-foreground transition-colors group-hover:text-foreground"
+                        >
+                          {skill}
+                        </Badge>
+                      ))}
+                    </div>
+                  </SpotlightCard>
                 </motion.div>
               ))}
             </div>
@@ -455,88 +512,104 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section id="projects" ref={projectsRef} className="py-24 px-6 relative z-10">
-        <div className="max-w-7xl mx-auto">
+      {/* Projects Section — the schema spine */}
+      <section id="projects" ref={projectsRef} className="relative z-10 px-6 py-24">
+        <div className="mx-auto max-w-5xl">
           <motion.div
             variants={staggerContainer}
             initial="hidden"
             animate={projectsInView ? "visible" : "hidden"}
           >
-            <motion.div variants={fadeUp} className="text-center mb-16">
-              <div className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary text-sm font-mono mb-4">
-                // featured work
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                Featured <span className="text-gradient">Projects</span>
-              </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                A selection of projects demonstrating full-stack expertise and system design
-              </p>
+            <motion.div variants={fadeUp}>
+              <SectionHeader
+                eyebrow="// featured work"
+                title="Featured"
+                accent="Projects"
+                description="A selection of projects demonstrating full-stack expertise and system design"
+              />
             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              {projects.map((project, index) => (
-                <motion.div
-                  key={project.title}
-                  variants={fadeUp}
-                  custom={index}
-                >
-                  <Card className="h-full border-border/50 bg-card/50 backdrop-blur hover:border-primary/30 transition-all group">
-                    <CardHeader>
-                      <CardTitle className="group-hover:text-primary transition-colors">
-                        {project.title}
-                      </CardTitle>
-                      <CardDescription className="text-xs text-primary/80">
-                        {project.highlights}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {project.description}
-                      </p>
-                      
-                      <div className="flex flex-wrap gap-2">
-                        {project.tags.map((tag) => (
-                          <Badge key={tag} variant="outline" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
+            {/* The spine runs behind the nodes on desktop only */}
+            <div className="relative md:pl-12">
+              <motion.div
+                aria-hidden
+                initial={{ scaleY: 0 }}
+                whileInView={{ scaleY: 1 }}
+                viewport={{ once: true, margin: "-120px" }}
+                transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute left-1 top-2 hidden h-[calc(100%-2rem)] w-px origin-top bg-gradient-to-b from-primary/60 via-primary/25 to-transparent md:block"
+              />
+
+              <div className="space-y-6">
+                {projects.map((project) => (
+                  <motion.div key={project.title} variants={fadeUp} className="md:node-dot">
+                    <SpotlightCard className="group overflow-hidden">
+                      {/* Table-header bar */}
+                      <div className="flex items-center gap-2 border-b border-border-subtle bg-surface-2/50 px-5 py-2.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-primary/70" />
+                        <span className="font-mono text-xs text-muted-foreground">
+                          {project.title}
+                        </span>
                       </div>
 
-                      <div className="flex flex-wrap gap-3 pt-2">
-                        <a
-                          href={project.github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-                        >
-                          <Github className="w-4 h-4" />
-                          View Code
-                        </a>
-                        {project.demo && (
-                          <a
-                            href={project.demo}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                            Watch Demo
-                          </a>
-                        )}
+                      <div className="grid gap-6 p-6 md:grid-cols-[1fr_auto] md:items-start">
+                        <div>
+                          <p className="font-mono text-xs text-primary/80">{project.highlights}</p>
+                          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                            {project.description}
+                          </p>
+
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            {project.tags.map((tag) => (
+                              <Badge
+                                key={tag}
+                                variant="outline"
+                                className="border-border-strong font-mono text-[11px] font-normal"
+                              >
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+
+                          <div className="mt-5 flex flex-wrap gap-4">
+                            <a
+                              href={project.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
+                            >
+                              <Github className="h-4 w-4" />
+                              View Code
+                            </a>
+                            {project.demo && (
+                              <a
+                                href={project.demo}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 text-sm text-primary transition-colors hover:text-primary/80"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                                Watch Demo
+                              </a>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="md:w-52">
+                          <QueryPlan rows={project.plan} />
+                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+                    </SpotlightCard>
+                  </motion.div>
+                ))}
+              </div>
             </div>
 
-            <motion.div variants={fadeUp} className="text-center">
+            <motion.div variants={fadeUp} className="mt-12 text-center">
               <Link to="/projects">
                 <Button size="lg" className="group">
                   View All Projects
-                  <ExternalLink className="ml-2 w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  <ExternalLink className="ml-2 h-4 w-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
                 </Button>
               </Link>
             </motion.div>
@@ -552,21 +625,19 @@ export default function Index() {
             initial="hidden"
             animate={contactInView ? "visible" : "hidden"}
           >
-            <motion.div variants={fadeUp} className="text-center mb-12">
-              <div className="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary text-sm font-mono mb-4">
-                // get in touch
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                Let's <span className="text-gradient">Connect</span>
-              </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Open to internship opportunities, freelance projects, and collaboration
-              </p>
+            <motion.div variants={fadeUp}>
+              <SectionHeader
+                eyebrow="// get in touch"
+                title="Let's"
+                accent="Connect"
+                description="Open to internship opportunities, freelance projects, and collaboration"
+              />
             </motion.div>
 
             <div className="grid md:grid-cols-3 gap-6 mb-12">
               <motion.div variants={fadeUp}>
-                <Card className="text-center border-border/50 bg-card/50 backdrop-blur hover:border-primary/30 transition-all group">
+                <SpotlightCard className="h-full">
+                <Card className="h-full border-none bg-transparent text-center shadow-none">
                   <CardContent className="pt-6">
                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
                       <Mail className="w-6 h-6 text-primary" />
@@ -580,10 +651,12 @@ export default function Index() {
                     </a>
                   </CardContent>
                 </Card>
+                </SpotlightCard>
               </motion.div>
 
               <motion.div variants={fadeUp}>
-                <Card className="text-center border-border/50 bg-card/50 backdrop-blur hover:border-primary/30 transition-all group">
+                <SpotlightCard className="h-full">
+                <Card className="h-full border-none bg-transparent text-center shadow-none">
                   <CardContent className="pt-6">
                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
                       <Phone className="w-6 h-6 text-primary" />
@@ -597,10 +670,12 @@ export default function Index() {
                     </a>
                   </CardContent>
                 </Card>
+                </SpotlightCard>
               </motion.div>
 
               <motion.div variants={fadeUp}>
-                <Card className="text-center border-border/50 bg-card/50 backdrop-blur hover:border-primary/30 transition-all group">
+                <SpotlightCard className="h-full">
+                <Card className="h-full border-none bg-transparent text-center shadow-none">
                   <CardContent className="pt-6">
                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
                       <MapPin className="w-6 h-6 text-primary" />
@@ -611,6 +686,7 @@ export default function Index() {
                     </p>
                   </CardContent>
                 </Card>
+                </SpotlightCard>
               </motion.div>
             </div>
 
