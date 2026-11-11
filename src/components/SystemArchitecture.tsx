@@ -2,6 +2,7 @@ import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useReducedMotion } from "framer-motion";
 import * as THREE from "three";
+import { useOnScreen } from "@/hooks/use-on-screen";
 
 /**
  * A full-stack system architecture rendered in 3D: clients on top, then the
@@ -388,6 +389,8 @@ export default function SystemArchitecture() {
     return { spread: sp, plateWidth: plate, contentW: w, contentH: h };
   }, [compact]);
 
+  const { ref, onScreen } = useOnScreen<HTMLDivElement>();
+
   if (reduced) {
     return (
       <div className="flex h-full w-full items-center justify-center p-6">
@@ -408,20 +411,24 @@ export default function SystemArchitecture() {
   }
 
   return (
-    <Canvas
-      camera={{ position: [0, 0, 11], fov: 50 }}
-      dpr={[1, compact ? 1.5 : 2]}
-      gl={{ alpha: true, antialias: !compact }}
-      style={{ background: "transparent" }}
-    >
-      <ambientLight intensity={0.5} />
-      <FitCamera width={contentW} height={contentH} />
-      <Stack
-        interactive={!compact}
-        compact={compact}
-        spread={spread}
-        plateWidth={plateWidth}
-      />
-    </Canvas>
+    <div ref={ref} className="h-full w-full">
+      <Canvas
+        camera={{ position: [0, 0, 11], fov: 50 }}
+        dpr={[1, compact ? 1.5 : 2]}
+        gl={{ alpha: true, antialias: !compact }}
+        // Only render while the diagram is actually on screen.
+        frameloop={onScreen ? "always" : "never"}
+        style={{ background: "transparent" }}
+      >
+        <ambientLight intensity={0.5} />
+        <FitCamera width={contentW} height={contentH} />
+        <Stack
+          interactive={!compact}
+          compact={compact}
+          spread={spread}
+          plateWidth={plateWidth}
+        />
+      </Canvas>
+    </div>
   );
 }

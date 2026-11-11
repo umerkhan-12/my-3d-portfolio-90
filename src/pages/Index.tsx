@@ -95,7 +95,7 @@ export default function Index() {
       <section id="home" className="relative min-h-screen flex flex-col lg:flex-row items-stretch overflow-hidden">
         {/* Hero visual: a live agent graph, not stock footage.
             This is the architecture he actually ships. */}
-        <div className="relative w-full lg:w-1/2 h-[46vh] lg:h-auto lg:min-h-screen lg:p-6 lg:pt-28">
+        <div className="relative w-full lg:w-1/2 h-[36vh] min-h-[260px] lg:h-auto lg:min-h-screen lg:p-6 lg:pt-28">
           <div className="relative h-full w-full overflow-hidden bg-gradient-surface lg:rounded-3xl lg:shadow-lg">
             <div
               aria-hidden
@@ -126,7 +126,7 @@ export default function Index() {
         </div>
 
         {/* Text Content */}
-        <div className="relative z-10 w-full lg:w-1/2 px-6 lg:px-12 xl:px-20 flex flex-col justify-center lg:text-left text-center py-12 lg:py-28">
+        <div className="relative z-10 w-full lg:w-1/2 px-6 lg:px-12 xl:px-20 flex flex-col justify-center lg:text-left text-center py-8 lg:py-28">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

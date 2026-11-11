@@ -48,11 +48,11 @@ function CoreSolid() {
     <group position={[0, 0, -1]}>
       <mesh ref={outer}>
         <icosahedronGeometry args={[2.6, 1]} />
-        <meshBasicMaterial color={C_PRIMARY} wireframe transparent opacity={0.13} />
+        <meshBasicMaterial color={C_PRIMARY} wireframe transparent opacity={0.07} />
       </mesh>
       <mesh ref={inner}>
         <octahedronGeometry args={[1.5, 0]} />
-        <meshBasicMaterial color={C_ACCENT} wireframe transparent opacity={0.16} />
+        <meshBasicMaterial color={C_ACCENT} wireframe transparent opacity={0.09} />
       </mesh>
     </group>
   );
@@ -149,8 +149,9 @@ export default function Scene3DSimple() {
     <div className="absolute inset-0 z-0 bg-transparent pointer-events-none">
       <Canvas
         camera={{ position: [0, 0, 7], fov: 60 }}
-        dpr={[1, isMobile ? 1.5 : 2]}
-        gl={{ alpha: true, antialias: !isMobile, powerPreference: "high-performance" }}
+        // Ambient decoration: a lower pixel ratio is invisible here and far cheaper.
+        dpr={[1, isMobile ? 1 : 1.5]}
+        gl={{ alpha: true, antialias: !isMobile, powerPreference: "low-power" }}
         style={{ background: "transparent" }}
       >
         {/* Fog pulls the far particles into the background color, selling depth. */}

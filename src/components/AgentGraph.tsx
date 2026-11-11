@@ -2,6 +2,7 @@ import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useReducedMotion } from "framer-motion";
 import * as THREE from "three";
+import { useOnScreen } from "@/hooks/use-on-screen";
 
 /**
  * A live agentic-system graph: an orchestrator core that calls out to tool
@@ -28,7 +29,7 @@ const TOOLS: Tool[] = [
 ];
 
 /** Widest orbit in the graph — what the camera has to frame. */
-const GRAPH_RADIUS = Math.max(...TOOLS.map((t) => Math.hypot(t.radius, t.y))) + 0.3;
+const GRAPH_RADIUS = Math.max(...TOOLS.map((t) => Math.hypot(t.radius, t.y))) + 0.6;
 
 function toVec(t: Tool) {
   return new THREE.Vector3(Math.cos(t.angle) * t.radius, t.y, Math.sin(t.angle) * t.radius);
@@ -88,6 +89,43 @@ function ToolNode({ tool, index }: { tool: Tool; index: number }) {
       <octahedronGeometry args={[0.24, 0]} />
       <meshBasicMaterial color={tool.color} transparent opacity={0.9} />
     </mesh>
+  );
+}
+
+/** Names the tool, so the graph reads as a real system rather than decoration. */
+function ToolLabel({ tool, size }: { tool: Tool; size: number }) {
+  const pos = useMemo(() => toVec(tool).add(new THREE.Vector3(0, -0.52, 0)), [tool]);
+  const { texture, aspect } = useMemo(() => {
+    const H = 44;
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
+    const font = "500 28px 'Fira Code', ui-monospace, monospace";
+    ctx.font = font;
+    canvas.width = Math.ceil(ctx.measureText(tool.label).width) + 24;
+    canvas.height = H;
+    // Resizing the canvas resets the context, so restate the font.
+    ctx.font = font;
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#d4d8e0";
+    ctx.fillText(tool.label, 12, H / 2);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.minFilter = THREE.LinearFilter;
+    return { texture: tex, aspect: canvas.width / H };
+  }, [tool.label]);
+
+  useEffect(() => () => texture.dispose(), [texture]);
+
+  return (
+    // No size attenuation: labels keep one readable size at any depth.
+    <sprite position={pos} scale={[size * aspect, size, 1]}>
+      <spriteMaterial
+        map={texture}
+        transparent
+        opacity={0.85}
+        depthWrite={false}
+        sizeAttenuation={false}
+      />
+    </sprite>
   );
 }
 
@@ -152,7 +190,7 @@ function FitCamera({ radius }: { radius: number }) {
 }
 
 /** Slow orbit plus damped pointer parallax. */
-function Rig({ interactive }: { interactive: boolean }) {
+function Rig({ interactive, labelSize }: { interactive: boolean; labelSize: number }) {
   const group = useRef<THREE.Group>(null);
   const { pointer } = useThree();
 
@@ -174,6 +212,7 @@ function Rig({ interactive }: { interactive: boolean }) {
         <group key={tool.label}>
           <Link tool={tool} />
           <ToolNode tool={tool} index={i} />
+          <ToolLabel tool={tool} size={labelSize} />
           <Pulse tool={tool} index={i} />
         </group>
       ))}
@@ -184,6 +223,7 @@ function Rig({ interactive }: { interactive: boolean }) {
 export default function AgentGraph() {
   const reduced = useReducedMotion();
   const [isMobile, setIsMobile] = useState(false);
+  const { ref, onScreen } = useOnScreen<HTMLDivElement>();
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 768px)");
@@ -208,15 +248,19 @@ export default function AgentGraph() {
   }
 
   return (
-    <Canvas
-      camera={{ position: [0, 1.4, 8.2], fov: 52 }}
-      dpr={[1, isMobile ? 1.5 : 2]}
-      gl={{ alpha: true, antialias: !isMobile }}
-      style={{ background: "transparent" }}
-    >
-      <ambientLight intensity={0.4} />
-      <FitCamera radius={GRAPH_RADIUS} />
-      <Rig interactive={!isMobile} />
-    </Canvas>
+    <div ref={ref} className="h-full w-full">
+      <Canvas
+        camera={{ position: [0, 1.4, 8.2], fov: 52 }}
+        dpr={[1, isMobile ? 1.5 : 2]}
+        gl={{ alpha: true, antialias: !isMobile }}
+        // Stop drawing once the hero scrolls away or the tab is hidden.
+        frameloop={onScreen ? "always" : "never"}
+        style={{ background: "transparent" }}
+      >
+        <ambientLight intensity={0.4} />
+        <FitCamera radius={GRAPH_RADIUS} />
+        <Rig interactive={!isMobile} labelSize={isMobile ? 0.058 : 0.027} />
+      </Canvas>
+    </div>
   );
 }
