@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { useRef, useState, useEffect, Suspense, lazy } from "react";
 const AgentGraph = lazy(() => import("@/components/AgentGraph"));
 const SystemArchitecture = lazy(() => import("@/components/SystemArchitecture"));
+const PhoneModel = lazy(() => import("@/components/PhoneModel"));
 
 import MagneticButton from "@/components/MagneticButton";
 import ScrambleText from "@/components/ScrambleText";
@@ -551,7 +552,17 @@ export default function Index() {
                         </span>
                       </div>
 
-                      <div className="grid gap-6 p-6 md:grid-cols-[1fr_auto] md:items-start">
+                      <div
+                        className={`grid gap-6 p-6 md:items-start ${
+                          project.flagship ? "md:grid-cols-[190px_1fr_auto]" : "md:grid-cols-[1fr_auto]"
+                        }`}
+                      >
+                        {/* Flagship gets its product in 3D — generated with TRELLIS */}
+                        {project.flagship && (
+                          <Suspense fallback={<div className="h-[300px] md:h-[340px]" />}>
+                            <PhoneModel className="mx-auto h-[300px] w-[190px] md:h-[340px]" />
+                          </Suspense>
+                        )}
                         <div>
                           <p className="font-mono text-xs text-primary/80">{project.subtitle}</p>
                           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
