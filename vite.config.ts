@@ -11,6 +11,11 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
+    // /api is a Vercel function; point this at a local copy when developing it.
+    proxy: process.env.API_PROXY ? { "/api": process.env.API_PROXY } : undefined,
+  },
+  preview: {
+    proxy: process.env.API_PROXY ? { "/api": process.env.API_PROXY } : undefined,
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {

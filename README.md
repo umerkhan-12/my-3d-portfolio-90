@@ -71,3 +71,18 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## Ask-my-agent (hero console)
+
+The hero console calls `api/ask.ts`, a Vercel Edge Function that retrieves from
+`src/data/profile.ts` (BM25, see `src/lib/knowledge.ts`) and asks a free
+OpenRouter model to answer from the retrieved passages only.
+
+Set these in Vercel → Project → Settings → Environment Variables:
+
+| Variable | Required | Default |
+| --- | --- | --- |
+| `OPENROUTER_API_KEY` | yes, for model-written answers | — |
+| `OPENROUTER_MODEL` | no | `openrouter/free` |
+
+Without the key the console still answers, using the top retrieved passage.

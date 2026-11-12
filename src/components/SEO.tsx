@@ -7,7 +7,9 @@ interface SEOProps {
   ogImage?: string;
 }
 
-export default function SEO({ title, description, keywords, ogImage }: SEOProps) {
+const DEFAULT_OG_IMAGE = "https://my-3d-portfolio-90.vercel.app/og-image.jpg";
+
+export default function SEO({ title, description, keywords, ogImage = DEFAULT_OG_IMAGE }: SEOProps) {
   const fullTitle = `${title} | Umer Khan - Full-Stack Developer`;
   const defaultKeywords = 'Full-Stack Developer, React, Next.js, Node.js, AI, Machine Learning, Web Development, Portfolio, Umer Khan';
   const metaKeywords = keywords ? `${keywords}, ${defaultKeywords}` : defaultKeywords;
