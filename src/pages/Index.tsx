@@ -13,6 +13,7 @@ const PhoneModel = lazy(() => import("@/components/PhoneModel"));
 import MagneticButton from "@/components/MagneticButton";
 import ScrambleText from "@/components/ScrambleText";
 import ScrollCue from "@/components/ScrollCue";
+import AskAgent from "@/components/AskAgent";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -107,18 +108,11 @@ export default function Index() {
               }}
             />
 
-            <Suspense fallback={null}>
-              <AgentGraph />
-            </Suspense>
-
-            {/* Caption: names what the viewer is looking at */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 p-5 lg:p-7">
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary/80">
-                live system
-              </p>
-              <p className="mt-1.5 max-w-xs text-sm text-muted-foreground">
-                An orchestrator calling tools — the pattern behind CliniBot and OMR.AI.
-              </p>
+            {/* On desktop the graph keeps the upper part; the agent console sits below it. */}
+            <div className="absolute inset-x-0 top-0 bottom-0 lg:bottom-[34%]">
+              <Suspense fallback={null}>
+                <AgentGraph />
+              </Suspense>
             </div>
 
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/50 lg:bg-gradient-to-r" />
@@ -248,6 +242,12 @@ export default function Index() {
               ))}
             </motion.div>
           </div>
+
+        {/* The agent console: in flow under the text on mobile, docked inside
+            the graph panel on desktop. One instance, so there is one conversation. */}
+        <div className="relative z-20 px-6 pb-12 lg:absolute lg:bottom-12 lg:left-12 lg:w-[calc(50%-6rem)] lg:p-0">
+          <AskAgent />
+        </div>
 
         {/* Scroll Indicator */}
         <ScrollCue />

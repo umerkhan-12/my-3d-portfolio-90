@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useReducedMotion } from "framer-motion";
 import * as THREE from "three";
 import { useOnScreen } from "@/hooks/use-on-screen";
+import { agentActivity } from "@/lib/agent-activity";
 
 /**
  * A live agentic-system graph: an orchestrator core that calls out to tool
@@ -45,7 +46,9 @@ function Core() {
     if (shell.current) {
       shell.current.rotation.y = t * 0.25;
       shell.current.rotation.x = t * 0.12;
-      shell.current.scale.setScalar(1 + Math.sin(t * 1.4) * 0.05);
+      // Beats harder while the agent is answering a question.
+      const busy = agentActivity.isBusy();
+      shell.current.scale.setScalar(1 + Math.sin(t * (busy ? 9 : 1.4)) * (busy ? 0.14 : 0.05));
     }
     if (cage.current) {
       cage.current.rotation.y = -t * 0.16;
@@ -81,7 +84,9 @@ function ToolNode({ tool, index }: { tool: Tool; index: number }) {
     // Flare as the pulse lands, then settle.
     const cycle = (t * 0.5 + index * 0.37) % 1;
     const flare = cycle > 0.88 ? 1 + (cycle - 0.88) * 6 : 1;
-    mesh.current.scale.setScalar(flare);
+    // A node the agent just retrieved from swells and holds, then eases back.
+    const lit = agentActivity.level(tool.label);
+    mesh.current.scale.setScalar(flare + lit * 1.3);
   });
 
   return (
@@ -131,6 +136,12 @@ function ToolLabel({ tool, size }: { tool: Tool; size: number }) {
 
 /** Static link from core to tool — the call path. */
 function Link({ tool }: { tool: Tool }) {
+  const material = useRef<THREE.LineBasicMaterial>(null);
+
+  useFrame(() => {
+    if (material.current) material.current.opacity = 0.22 + agentActivity.level(tool.label) * 0.7;
+  });
+
   const geometry = useMemo(() => {
     const g = new THREE.BufferGeometry();
     const end = toVec(tool);
@@ -144,7 +155,7 @@ function Link({ tool }: { tool: Tool }) {
   return (
     <line>
       <primitive object={geometry} attach="geometry" />
-      <lineBasicMaterial color={tool.color} transparent opacity={0.22} />
+      <lineBasicMaterial ref={material} color={tool.color} transparent opacity={0.22} />
     </line>
   );
 }
