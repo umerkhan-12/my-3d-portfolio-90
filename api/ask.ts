@@ -121,7 +121,11 @@ export default async function handler(req: Request): Promise<Response> {
       const context = hits.map((h, i) => `[${i + 1}] ${h.chunk.title}\n${h.chunk.text}`).join("\n\n");
       const t1 = performance.now();
 
-      try {
+      /**
+       * One model call, streamed to the client. Returns how many characters of
+       * answer it produced and which model served it.
+       */
+      const attempt = async () => {
         const upstream = await fetch(`${base}/chat/completions`, {
           method: "POST",
           headers: {
@@ -132,18 +136,21 @@ export default async function handler(req: Request): Promise<Response> {
           body: JSON.stringify({
             model,
             stream: true,
-            max_tokens: 400,
+            // Free routing often lands on a reasoning model, whose thinking
+            // counts against this budget — leave room for the answer itself.
+            max_tokens: 1500,
+            reasoning: { effort: "low", exclude: true },
             temperature: 0.2,
             messages: [
               { role: "system", content: SYSTEM },
               { role: "user", content: `CONTEXT\n${context}\n\nQUESTION\n${question}` },
             ],
           }),
-          signal: AbortSignal.timeout(25_000),
+          signal: AbortSignal.timeout(20_000),
         });
 
         if (!upstream.ok || !upstream.body) {
-          return fallback(`model unavailable (${upstream.status})`);
+          return { produced: 0, servedBy: model, status: upstream.status };
         }
 
         const reader = upstream.body.getReader();
@@ -176,14 +183,26 @@ export default async function handler(req: Request): Promise<Response> {
             }
           }
         }
+        return { produced, servedBy, status: upstream.status };
+      };
 
-        if (produced === 0) return fallback("model returned no text");
+      try {
+        // The free router picks a different model per call, so one retry
+        // usually recovers from a model that is rate-limited or returns nothing.
+        let result = await attempt();
+        if (result.produced === 0) result = await attempt();
+
+        if (result.produced === 0) {
+          return fallback(
+            result.status === 200 ? "model returned no text" : `model unavailable (${result.status})`
+          );
+        }
 
         send({
           type: "trace",
           step: "generate",
           ms: Math.round(performance.now() - t1),
-          detail: servedBy,
+          detail: result.servedBy,
         });
         send({ type: "done", mode: "generated" });
         controller.close();
