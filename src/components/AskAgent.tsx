@@ -109,11 +109,14 @@ export default function AskAgent({ className }: { className?: string }) {
       )}
     >
       <div className="flex items-center justify-between gap-3">
-        <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
+        <p className="flex items-center gap-2 whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.2em] text-primary">
           <span className={cn("h-1.5 w-1.5 rounded-full bg-primary", busy && "animate-pulse")} />
           ask my agent
         </p>
-        <p className="font-mono text-[10px] text-muted-foreground">answers only from this portfolio's data</p>
+        <p className="whitespace-nowrap font-mono text-[10px] text-muted-foreground">
+          <span className="sm:hidden">portfolio data only</span>
+          <span className="hidden sm:inline">answers only from this portfolio's data</span>
+        </p>
       </div>
 
       {/* Conversation */}

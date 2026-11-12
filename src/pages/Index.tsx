@@ -97,7 +97,7 @@ export default function Index() {
       <section id="home" className="relative min-h-screen flex flex-col lg:flex-row items-stretch overflow-hidden">
         {/* Hero visual: a live agent graph, not stock footage.
             This is the architecture he actually ships. */}
-        <div className="relative w-full lg:w-1/2 h-[36vh] min-h-[260px] lg:h-auto lg:min-h-screen lg:p-6 lg:pt-28">
+        <div className="relative order-1 w-full lg:w-1/2 h-[30vh] min-h-[230px] lg:h-auto lg:min-h-screen lg:p-6 lg:pt-28">
           <div className="relative h-full w-full overflow-hidden bg-gradient-surface lg:rounded-3xl lg:shadow-lg">
             <div
               aria-hidden
@@ -121,7 +121,7 @@ export default function Index() {
         </div>
 
         {/* Text Content */}
-        <div className="relative z-10 w-full lg:w-1/2 px-6 lg:px-12 xl:px-20 flex flex-col justify-center lg:text-left text-center py-8 lg:py-28">
+        <div className="relative z-10 order-3 w-full lg:w-1/2 px-6 lg:px-12 xl:px-20 flex flex-col justify-center lg:text-left text-center py-8 lg:py-28">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -243,9 +243,10 @@ export default function Index() {
             </motion.div>
           </div>
 
-        {/* The agent console: in flow under the text on mobile, docked inside
-            the graph panel on desktop. One instance, so there is one conversation. */}
-        <div className="relative z-20 px-6 pb-12 lg:absolute lg:bottom-12 lg:left-12 lg:w-[calc(50%-6rem)] lg:p-0">
+        {/* The agent console: directly under the graph on mobile (so it is the
+            first thing a visitor can use), docked inside the graph panel on
+            desktop. One instance, so there is one conversation. */}
+        <div className="relative z-20 order-2 -mt-6 px-4 lg:absolute lg:bottom-12 lg:left-12 lg:mt-0 lg:w-[calc(50%-6rem)] lg:px-0">
           <AskAgent />
         </div>
 
