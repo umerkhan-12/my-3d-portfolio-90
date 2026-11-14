@@ -45,7 +45,7 @@ export default function Experience() {
       />
       <main id="main" className="relative">
         <DeskScene opened={opened}>
-          <PhoneFrame buzzing={!opened}>
+          <PhoneFrame buzzing={!opened} opened={opened}>
             <AnimatePresence mode="wait" initial={false}>
               <motion.div key={opened ? "chat" : "lock"} className="absolute inset-0" {...screen}>
                 {opened ? (

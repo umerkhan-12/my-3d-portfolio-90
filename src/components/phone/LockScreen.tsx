@@ -4,20 +4,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, BatteryFull, FileDown, Lock, MessageSquareText, Signal, Wifi } from "lucide-react";
 import { profile } from "@/data/profile";
 
-const DESKTOP_QUERY = "(min-width: 1024px)";
-
-function useIsDesktop() {
-  const [desktop, setDesktop] = useState(() => typeof window !== "undefined" && window.matchMedia(DESKTOP_QUERY).matches);
-  useEffect(() => {
-    const mq = window.matchMedia(DESKTOP_QUERY);
-    const update = () => setDesktop(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-  return desktop;
-}
-
 function useNow() {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
@@ -45,11 +31,9 @@ function splitTime(d: Date) {
 export default function LockScreen({ onOpen, autoFocus = false }: { onOpen: () => void; autoFocus?: boolean }) {
   const now = useNow();
   const reduce = useReducedMotion() ?? false;
-  const desktop = useIsDesktop();
   const cardRef = useRef<HTMLButtonElement>(null);
   const { clock, period } = splitTime(now);
-  // On desktop the whole phone buzzes; full-screen on mobile, the card does.
-  const shakeCard = !desktop && !reduce;
+  // The whole phone buzzes (PhoneFrame), so the card itself stays still.
 
   useEffect(() => {
     if (autoFocus) cardRef.current?.focus({ preventScroll: true });
@@ -83,7 +67,7 @@ export default function LockScreen({ onOpen, autoFocus = false }: { onOpen: () =
       />
 
       {/* status bar */}
-      <div aria-hidden="true" className="flex items-center justify-between px-6 pt-3 font-mono text-[12px] font-medium text-foreground/85 lg:px-7 lg:pt-[15px]">
+      <div aria-hidden="true" className="flex items-center justify-between px-5 pt-3 font-mono text-[11px] font-medium text-foreground/85 lg:px-7 lg:pt-[15px] lg:text-[12px]">
         <span className="tabular-nums">{timeFmt.format(now)}</span>
         <span className="flex items-center gap-1.5">
           <Signal size={13} strokeWidth={2.4} />
@@ -93,22 +77,22 @@ export default function LockScreen({ onOpen, autoFocus = false }: { onOpen: () =
       </div>
 
       {/* clock */}
-      <div className="flex flex-col items-center px-6 pt-[9vh] text-center lg:pt-[13%]">
+      <div className="flex flex-col items-center px-4 pt-[7%] text-center lg:px-6 lg:pt-[13%]">
         <Lock aria-hidden="true" size={15} className="mb-2 text-foreground/60" />
-        <p className="font-display text-[15px] font-medium text-foreground/75">{dateFmt.format(now)}</p>
+        <p className="font-display text-[13px] font-medium text-foreground/75 lg:text-[15px]">{dateFmt.format(now)}</p>
         <p className="mt-1 font-display font-semibold leading-none tracking-tight text-foreground" aria-label={`Time ${timeFmt.format(now)}`}>
-          <span className="text-[clamp(4rem,19vw,5.25rem)] tabular-nums lg:text-[5rem]">{clock}</span>
-          {period && <span className="ml-1.5 text-xl font-medium text-foreground/60">{period}</span>}
+          <span className="text-[3.4rem] tabular-nums lg:text-[5rem]">{clock}</span>
+          {period && <span className="ml-1.5 text-base font-medium lg:text-xl text-foreground/60">{period}</span>}
         </p>
 
-        <div className="mt-7 flex flex-col items-center">
-          <h1 className="font-display text-2xl font-bold tracking-tight">{profile.name}</h1>
-          <p className="mt-1 max-w-[16rem] text-balance text-[13px] leading-snug text-muted-foreground">{profile.tagline}</p>
+        <div className="mt-4 flex flex-col items-center lg:mt-7">
+          <h1 className="font-display text-xl font-bold tracking-tight lg:text-2xl">{profile.name}</h1>
+          <p className="mt-1 max-w-[16rem] text-balance text-[12px] lg:text-[13px] leading-snug text-muted-foreground">{profile.tagline}</p>
         </div>
       </div>
 
       {/* notification */}
-      <div className="mt-auto px-4 pb-3 lg:px-3.5">
+      <div className="mt-auto px-3 pb-3 lg:px-3.5">
         <p className="mb-2 px-1 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/50">1 new message</p>
         <div className="relative">
           {/* a second card peeking out underneath, for depth */}
@@ -118,20 +102,9 @@ export default function LockScreen({ onOpen, autoFocus = false }: { onOpen: () =
             type="button"
             onClick={onOpen}
             initial={reduce ? false : { opacity: 0, y: 24, scale: 0.96 }}
-            animate={
-              shakeCard
-                ? { opacity: 1, y: 0, scale: 1, x: [0, -3, 3, -2, 2, 0] }
-                : { opacity: 1, y: 0, scale: 1, x: 0 }
-            }
-            transition={
-              shakeCard
-                ? {
-                    default: { duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.35 },
-                    x: { duration: 0.5, repeat: Infinity, repeatDelay: 3.5, delay: 1.4 },
-                  }
-                : { duration: reduce ? 0 : 0.5, ease: [0.22, 1, 0.36, 1], delay: reduce ? 0 : 0.35 }
-            }
-            className="group relative block w-full rounded-[22px] border border-white/10 bg-surface-2/70 p-3.5 text-left shadow-[0_18px_40px_-18px_hsl(220_40%_1%/0.9)] backdrop-blur-xl transition-colors hover:border-primary/40 hover:bg-surface-2/85 focus-visible:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: reduce ? 0 : 0.5, ease: [0.22, 1, 0.36, 1], delay: reduce ? 0 : 0.35 }}
+            className="group relative block w-full rounded-[22px] border border-white/10 bg-surface-2/70 p-3 text-left lg:p-3.5 shadow-[0_18px_40px_-18px_hsl(220_40%_1%/0.9)] backdrop-blur-xl transition-colors hover:border-primary/40 hover:bg-surface-2/85 focus-visible:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label="Open message from Umer's agent: Hi, I build AI agents that book appointments. Want to see how?"
           >
             <span className="flex items-start gap-3">
@@ -163,7 +136,7 @@ export default function LockScreen({ onOpen, autoFocus = false }: { onOpen: () =
         </div>
 
         {/* escape hatch: always visible */}
-        <nav aria-label="Skip the experience" className="mt-5 flex items-center justify-center gap-5 text-[12.5px]">
+        <nav aria-label="Skip the experience" className="mt-4 flex items-center justify-center gap-4 text-[12.5px] lg:mt-5 lg:gap-5">
           <Link
             to="/classic"
             className="rounded-sm text-muted-foreground underline decoration-border-strong underline-offset-4 transition-colors hover:text-foreground hover:decoration-primary"
@@ -182,7 +155,7 @@ export default function LockScreen({ onOpen, autoFocus = false }: { onOpen: () =
         </nav>
 
         {/* home indicator */}
-        <div aria-hidden="true" className="mx-auto mt-4 h-[5px] w-32 rounded-full bg-foreground/35" />
+        <div aria-hidden="true" className="mx-auto mt-3 h-[5px] w-28 lg:mt-4 lg:w-32 rounded-full bg-foreground/35" />
       </div>
     </div>
   );

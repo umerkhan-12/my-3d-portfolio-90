@@ -7,6 +7,8 @@ import { profile } from "@/data/profile";
  * Top-down dark developer's desk. Decorative props live in two side columns
  * that stop 200px + a gutter short of the centre line, so a 400px-wide phone
  * is never overlapped. Props are cropped by the viewport edges on purpose.
+ * Below `lg` a smaller set peeks in from the edges and corners around the
+ * bezelled phone; it sits under the phone and never takes pointer events.
  */
 
 const INK = "hsl(220 14% 5%)";
@@ -24,12 +26,17 @@ type DriftProps = {
   reduce: boolean;
   dx: number;
   dy?: number;
+  /** Mobile props are the desktop artwork shrunk; `origin` is the corner they are anchored by. */
+  scale?: number;
+  origin?: string;
+  /** Opacity once the phone is open (mobile props vanish behind the full-screen chat). */
+  fade?: number;
   className?: string;
   children: ReactNode;
 };
 
 /** Wrapper that drifts a prop away from centre and dims it when the phone opens. */
-function Drift({ opened, reduce, dx, dy = 0, className = "", children }: DriftProps) {
+function Drift({ opened, reduce, dx, dy = 0, scale, origin, fade = 0.6, className = "", children }: DriftProps) {
   return (
     <motion.div
       aria-hidden="true"
@@ -38,11 +45,11 @@ function Drift({ opened, reduce, dx, dy = 0, className = "", children }: DriftPr
       animate={{
         x: opened && !reduce ? dx : 0,
         y: opened && !reduce ? dy : 0,
-        opacity: opened ? 0.6 : 1,
+        opacity: opened ? fade : 1,
       }}
       transition={reduce ? { duration: 0 } : { duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
     >
-      {children}
+      {scale ? <div style={{ transform: `scale(${scale})`, transformOrigin: origin }}>{children}</div> : children}
     </motion.div>
   );
 }
@@ -313,6 +320,25 @@ export default function DeskScene({ opened, children }: { opened: boolean; child
           ].join(", "),
         }}
       />
+
+      {/* decorative props, mobile: the same artwork, shrunk and cropped by the screen edges */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden lg:hidden">
+        <Drift {...p} fade={0} dx={0} dy={-30} scale={0.55} origin="top left" className="-left-[70px] -top-[58px]">
+          <Keyboard />
+        </Drift>
+        <Drift {...p} fade={0} dx={30} dy={-20} scale={0.5} origin="top right" className="-right-[34px] -top-[10px]">
+          <Mug />
+        </Drift>
+        <Drift {...p} fade={0} dx={-30} scale={0.55} origin="top left" className="-left-[52px] top-[42%]">
+          <StickyNote />
+        </Drift>
+        <Drift {...p} fade={0} dx={-30} dy={30} scale={0.5} origin="bottom left" className="-bottom-[96px] -left-[52px]">
+          <Notebook />
+        </Drift>
+        <Drift {...p} fade={0} dx={30} dy={30} scale={0.5} origin="bottom right" className="-bottom-[96px] -right-[34px]">
+          <LanyardCard />
+        </Drift>
+      </div>
 
       {/* decorative props, desktop only */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden lg:block">

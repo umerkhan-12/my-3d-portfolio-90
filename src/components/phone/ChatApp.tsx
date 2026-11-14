@@ -9,7 +9,7 @@ import {
   type Intent, type MessageBody, type Slot,
 } from "@/lib/chat-script";
 import { askAgent, type AskMode } from "@/lib/ask-client";
-import MessageBubble, { type ChatMessage } from "./MessageBubble";
+import MessageBubble, { DragScroll, type ChatMessage } from "./MessageBubble";
 
 const TYPING_MS = 520;
 const timeFmt = new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" });
@@ -331,10 +331,11 @@ export default function ChatApp({ onClose, autoFocus = false }: { onClose: () =>
 
       {/* composer: quick replies + input, pinned to the bottom */}
       <div className="sticky bottom-0 z-10 border-t border-white/[0.06] bg-surface-1/85 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2.5 backdrop-blur-xl lg:pb-5">
-        <div
+        {/* a scroller below lg (drag-able with a mouse); wraps so all six show from lg up */}
+        <DragScroll
           role="group"
           aria-label="Quick replies"
-          className="flex gap-2 overflow-x-auto px-3 pb-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex gap-2 overflow-x-auto px-3 pb-2.5 [scrollbar-width:none] lg:flex-wrap lg:overflow-visible [&::-webkit-scrollbar]:hidden [@media(hover:hover)]:cursor-grab [@media(hover:hover)]:data-[dragging]:cursor-grabbing lg:[@media(hover:hover)]:cursor-auto"
         >
           {QUICK_REPLIES.map((q) => (
             <button
@@ -350,7 +351,7 @@ export default function ChatApp({ onClose, autoFocus = false }: { onClose: () =>
               {q.label}
             </button>
           ))}
-        </div>
+        </DragScroll>
         <form onSubmit={onSubmit} className="flex items-center gap-2 px-3">
           <label htmlFor="chat-input" className="sr-only">
             Ask a question about {profile.firstName}

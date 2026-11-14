@@ -1,7 +1,11 @@
-import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
 import {
-  ArrowUpRight, CalendarPlus, Check, Clock, FileDown, Github, Linkedin, Mail, PlayCircle, Star,
+  forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState,
+  type HTMLAttributes, type PointerEvent as ReactPointerEvent, type ReactNode,
+} from "react";
+import { Link } from "react-router-dom";
+import { useReducedMotion } from "framer-motion";
+import {
+  ArrowUpRight, CalendarPlus, Check, Clock, ChevronLeft, ChevronRight, FileDown, Github, Linkedin, Mail, PlayCircle, Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { MessageBody, Slot } from "@/lib/chat-script";
@@ -66,6 +70,166 @@ function Tag({ children }: { children: ReactNode }) {
     <span className="rounded-full border border-border-strong bg-surface-1/80 px-2 py-0.5 font-mono text-[10.5px] text-muted-foreground">
       {children}
     </span>
+  );
+}
+
+const DRAG_THRESHOLD = 5; // px of mouse travel before a press counts as a drag
+
+/**
+ * Horizontal scroller that a mouse can drag (touch and trackpads already
+ * scroll natively). A press only becomes a drag after DRAG_THRESHOLD px, so
+ * clicks on links and buttons inside still work; a real drag swallows its click.
+ */
+export const DragScroll = forwardRef<HTMLElement, HTMLAttributes<HTMLElement> & { as?: "div" | "ul" }>(
+  function DragScroll({ as: Tag = "div", className, onKeyDown, children, ...rest }, ref) {
+    const el = useRef<HTMLElement>(null);
+    useImperativeHandle(ref, () => el.current as HTMLElement);
+    const drag = useRef<{ id: number; x: number; left: number; active: boolean } | null>(null);
+    const swallowClick = useRef(false);
+
+    const onPointerDown = (e: ReactPointerEvent<HTMLElement>) => {
+      const node = el.current;
+      if (e.pointerType !== "mouse" || e.button !== 0 || !node) return;
+      drag.current = { id: e.pointerId, x: e.clientX, left: node.scrollLeft, active: false };
+    };
+    const onPointerMove = (e: ReactPointerEvent<HTMLElement>) => {
+      const node = el.current;
+      const d = drag.current;
+      if (!node || !d || d.id !== e.pointerId) return;
+      const dx = e.clientX - d.x;
+      if (!d.active) {
+        if (Math.abs(dx) < DRAG_THRESHOLD || node.scrollWidth <= node.clientWidth) return;
+        d.active = true;
+        node.setPointerCapture(e.pointerId);
+        node.dataset.dragging = "true";
+        node.style.scrollSnapType = "none"; // free movement while dragging, snaps again on release
+      }
+      node.scrollLeft = d.left - dx;
+    };
+    const end = (e: ReactPointerEvent<HTMLElement>) => {
+      const node = el.current;
+      const d = drag.current;
+      if (!node || !d || d.id !== e.pointerId) return;
+      drag.current = null;
+      if (!d.active) return;
+      swallowClick.current = true;
+      window.setTimeout(() => (swallowClick.current = false), 0);
+      delete node.dataset.dragging;
+      node.style.scrollSnapType = "";
+    };
+
+    return (
+      <Tag
+        {...rest}
+        ref={el as never}
+        className={className}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={end}
+        onPointerCancel={end}
+        onDragStart={(e) => e.preventDefault()}
+        onClickCapture={(e) => {
+          if (swallowClick.current) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
+        onKeyDown={onKeyDown}
+      >
+        {children}
+      </Tag>
+    );
+  },
+);
+
+/** Project cards: swipe on touch; arrows, drag and arrow keys with a mouse or keyboard. */
+function ProjectCarousel({ projects }: { projects: Project[] }) {
+  const reduce = useReducedMotion() ?? false;
+  const row = useRef<HTMLElement>(null);
+  const [edge, setEdge] = useState({ start: true, end: false });
+
+  const measure = useCallback(() => {
+    const node = row.current;
+    if (!node) return;
+    setEdge({
+      start: node.scrollLeft <= 2,
+      end: node.scrollLeft >= node.scrollWidth - node.clientWidth - 2,
+    });
+  }, []);
+
+  useEffect(() => {
+    measure();
+    const node = row.current;
+    if (!node || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(node);
+    return () => ro.disconnect();
+  }, [measure]);
+
+  /** One card plus the gap, read from the DOM so it follows the card width. */
+  const step = (dir: 1 | -1) => {
+    const node = row.current;
+    const card = node?.querySelector("li");
+    if (!node || !card) return;
+    const gap = parseFloat(getComputedStyle(node).columnGap) || 0;
+    node.scrollBy({ left: dir * (card.getBoundingClientRect().width + gap), behavior: reduce ? "auto" : "smooth" });
+  };
+
+  const arrow =
+    "absolute top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-border-strong bg-surface-1/90 text-foreground shadow-md backdrop-blur " +
+    "transition-opacity hover:border-primary/60 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary " +
+    "disabled:pointer-events-none disabled:opacity-0 [@media(hover:hover)]:flex";
+
+  return (
+    <div className="-mx-3 lg:-mx-3.5">
+      <div className="relative">
+        <DragScroll
+          as="ul"
+          ref={row}
+          tabIndex={0}
+          aria-label={`${projects.length} projects`}
+          onScroll={measure}
+          onKeyDown={(e) => {
+            if (e.target !== e.currentTarget) return; // keep arrow keys for focused controls inside
+            if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+              e.preventDefault();
+              step(e.key === "ArrowRight" ? 1 : -1);
+            }
+          }}
+          className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-px-3 px-3 pb-2 pt-1 [scrollbar-width:none] lg:scroll-px-3.5 lg:px-3.5 [&::-webkit-scrollbar]:hidden [@media(hover:hover)]:scroll-px-11 [@media(hover:hover)]:px-11 [@media(hover:hover)]:[mask-image:linear-gradient(to_right,transparent,#000_40px,#000_calc(100%-40px),transparent)] [@media(hover:hover)]:cursor-grab [@media(hover:hover)]:data-[dragging]:cursor-grabbing focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary/60"
+        >
+          {projects.map((p) => (
+            <li key={p.title} className="flex">
+              <ProjectCard project={p} />
+            </li>
+          ))}
+          <li aria-hidden="true" className="w-1 shrink-0" />
+        </DragScroll>
+        {/* arrows sit in the side gutters the row reserves, so they never cover card text */}
+        <button
+          type="button"
+          aria-label="Previous project"
+          disabled={edge.start}
+          onClick={() => step(-1)}
+          className={cn(arrow, "left-1.5")}
+        >
+          <ChevronLeft size={18} aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          aria-label="Next project"
+          disabled={edge.end}
+          onClick={() => step(1)}
+          className={cn(arrow, "right-1.5")}
+        >
+          <ChevronRight size={18} aria-hidden="true" />
+        </button>
+      </div>
+      <p aria-hidden="true" className="px-4 font-mono text-[10px] text-muted-foreground/70">
+        <span className="[@media(hover:hover)]:hidden">swipe for more →</span>
+        <span className="hidden [@media(hover:hover)]:inline">drag, or use the arrows, for more →</span>
+      </p>
+    </div>
   );
 }
 
@@ -183,22 +347,7 @@ export default function MessageBubble({ message, onPickSlot, disabled = false, f
       );
 
     case "projects":
-      return (
-        <div className="-mx-3 lg:-mx-3.5">
-          <ul
-            aria-label={`${body.projects.length} projects`}
-            className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto scroll-px-3 px-3 pb-2 pt-1 [scrollbar-width:none] lg:scroll-px-3.5 lg:px-3.5 [&::-webkit-scrollbar]:hidden"
-          >
-            {body.projects.map((p) => (
-              <li key={p.title} className="flex">
-                <ProjectCard project={p} />
-              </li>
-            ))}
-            <li aria-hidden="true" className="w-1 shrink-0" />
-          </ul>
-          <p aria-hidden="true" className="px-4 font-mono text-[10px] text-muted-foreground/70">swipe for more →</p>
-        </div>
-      );
+      return <ProjectCarousel projects={body.projects} />;
 
     case "chips":
       return (
