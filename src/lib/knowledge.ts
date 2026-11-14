@@ -59,6 +59,15 @@ export function buildChunks(): Chunk[] {
     )
   );
 
+  out.push(
+    chunk(
+      "agent",
+      "About this agent",
+      "This assistant is Umer's portfolio agent, built by Umer. It answers questions about his work by retrieving passages from his portfolio data (BM25 ranking) and asking a language model, served through OpenRouter, to answer from those passages only. It is the same retrieve-then-answer pattern he uses in his products. It can talk about his projects, skills, experience, education and how to contact or book a call with him.",
+      "#home"
+    )
+  );
+
   for (const job of experience) {
     out.push(
       chunk(
@@ -153,6 +162,17 @@ export function tokenize(text: string): string[] {
 }
 
 export type Hit = { chunk: Chunk; score: number };
+
+/**
+ * What the agent reads when a question matches nothing specific — greetings,
+ * "who are you", "why should I hire him" — so it can still give a useful,
+ * grounded answer instead of a dead end.
+ */
+export function generalContext(chunks: Chunk[]): Chunk[] {
+  const flagship = projects.find((p) => p.flagship) ?? projects[0];
+  const ids = ["profile", "agent", `project-${flagship.title}`, "stats", "contact"];
+  return ids.map((id) => chunks.find((c) => c.id === id)).filter((c): c is Chunk => Boolean(c));
+}
 
 /** Plain BM25 over the chunks, with the title counted twice. */
 export function retrieve(query: string, chunks: Chunk[], k = 4): Hit[] {
