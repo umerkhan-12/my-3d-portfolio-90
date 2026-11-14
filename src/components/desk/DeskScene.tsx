@@ -337,10 +337,10 @@ export default function DeskScene({ opened, children }: { opened: boolean; child
           <Drift {...p} dx={36} dy={-20} className="-right-[44px] top-[14px]">
             <Mug />
           </Drift>
-          <Drift {...p} dx={34} dy={20} className="-bottom-[96px] -right-[22px]">
+          <Drift {...p} dx={34} dy={20} className="-bottom-[34px] -right-[22px]">
             <LanyardCard />
           </Drift>
-          <Drift {...p} dx={30} dy={14} className="-right-[16px] top-[calc(50%+88px)]">
+          <Drift {...p} dx={30} dy={14} className="-right-[16px] top-[calc(50%+40px)]">
             <Cable />
           </Drift>
         </div>
