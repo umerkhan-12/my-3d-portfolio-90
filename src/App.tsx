@@ -7,9 +7,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import BackgroundLayers from "@/components/BackgroundLayers";
 import PageTransition from "@/components/PageTransition";
-import Index from "./pages/Index";
+import Experience from "./pages/Experience";
 
 // Only the landing page ships in the initial bundle; the rest load on navigation.
+const Index = lazy(() => import("./pages/Index"));
 const About = lazy(() => import("./pages/About"));
 const Projects = lazy(() => import("./pages/Projects"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -33,7 +34,8 @@ const App = () => (
           <BackgroundLayers />
           <Suspense fallback={<div className="min-h-screen bg-background" />}>
             <Routes>
-              <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+              <Route path="/" element={<PageTransition><Experience /></PageTransition>} />
+              <Route path="/classic" element={<PageTransition><Index /></PageTransition>} />
               <Route path="/about" element={<PageTransition><About /></PageTransition>} />
               <Route path="/projects" element={<PageTransition><Projects /></PageTransition>} />
               <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />

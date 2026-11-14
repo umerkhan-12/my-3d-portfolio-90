@@ -2,10 +2,8 @@ import { useRef, useState, type FormEvent } from "react";
 import { ArrowUp, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { agentActivity } from "@/lib/agent-activity";
+import { askAgent, type AskSource, type AskTrace, type AskMode } from "@/lib/ask-client";
 
-type Source = { id: string; title: string; href: string; nodes: string[]; score: number };
-type Trace = { step: string; ms: number; detail: string };
-type Mode = "generated" | "retrieval-only";
 
 const SUGGESTIONS = [
   "What is CliniBot?",
@@ -22,9 +20,9 @@ export default function AskAgent({ className }: { className?: string }) {
   const [question, setQuestion] = useState("");
   const [asked, setAsked] = useState("");
   const [answer, setAnswer] = useState("");
-  const [sources, setSources] = useState<Source[]>([]);
-  const [trace, setTrace] = useState<Trace[]>([]);
-  const [mode, setMode] = useState<Mode | null>(null);
+  const [sources, setSources] = useState<AskSource[]>([]);
+  const [trace, setTrace] = useState<AskTrace[]>([]);
+  const [mode, setMode] = useState<AskMode | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const abort = useRef<AbortController | null>(null);
@@ -48,42 +46,20 @@ export default function AskAgent({ className }: { className?: string }) {
     agentActivity.setBusy(true);
 
     try {
-      const res = await fetch("/api/ask", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: text }),
-        signal: controller.signal,
-      });
-
-      if (!res.ok || !res.body) {
-        const body = await res.json().catch(() => null);
-        throw new Error(body?.error ?? "The agent is unavailable right now.");
-      }
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() ?? "";
-
-        for (const line of lines) {
-          if (!line.trim()) continue;
-          const event = JSON.parse(line);
-          if (event.type === "trace") setTrace((t) => [...t, event]);
-          if (event.type === "token") setAnswer((a) => a + event.text);
-          if (event.type === "done") setMode(event.mode);
-          if (event.type === "sources") {
-            setSources(event.sources);
+      await askAgent(
+        text,
+        {
+          onTrace: (t) => setTrace((prev) => [...prev, t]),
+          onToken: (t) => setAnswer((a) => a + t),
+          onDone: (m) => setMode(m),
+          onSources: (list) => {
+            setSources(list);
             // Light the graph nodes the retrieved chunks involve.
-            agentActivity.fire(event.sources.flatMap((s: Source) => s.nodes));
-          }
-        }
-      }
+            agentActivity.fire(list.flatMap((s) => s.nodes));
+          },
+        },
+        controller.signal
+      );
     } catch (err) {
       if ((err as Error).name !== "AbortError") {
         setError((err as Error).message || "The agent is unavailable right now.");

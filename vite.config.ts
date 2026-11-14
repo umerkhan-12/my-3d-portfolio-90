@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => ({
         // Split the heavy, rarely-changing dependencies so the app chunk stays
         // small and three.js can be fetched after first paint.
         manualChunks: {
-          react: ["react", "react-dom", "react-router-dom"],
+          react: ["react", "react/jsx-runtime", "react-dom", "react-router-dom"],
           three: ["three", "@react-three/fiber"],
           motion: ["framer-motion"],
         },
